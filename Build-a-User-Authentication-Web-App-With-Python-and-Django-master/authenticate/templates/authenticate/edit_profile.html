@@ -1,0 +1,99 @@
+{% extends 'authenticate/base_zero.html' %}
+{% load static %}
+{% block content %}
+          <div class="container-fluid">
+            <div class="page-title">
+              <div class="row">
+                <div class="col-12 col-sm-6">
+                  <h3>Edit Profile</h3>
+                </div>
+                
+                <div class="col-12 col-sm-6">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">                                       <i data-feather="home"></i></a></li>
+                    <li class="breadcrumb-item">User</li>
+                    <li class="breadcrumb-item active"> User Edit</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Container-fluid starts-->
+          <div class="container-fluid">
+            <div class="edit-profile">
+              <div class="row">
+                <div class="col-xl-4">
+                  <div class="card">
+                  <!-- login page start-->
+                  
+                    <div class="card-header pb-0">
+                      <h4 class="card-title mb-0">My Profile</h4>
+                      <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                    </div>
+                    
+
+
+                    <div class="card-body">
+                      <form>
+                        <div class="row mb-2">
+                          <div class="profile-title">
+                            <div class="media">                        <img class="img-70 rounded-circle" alt="" src="{%  static 'assets/images/user/7.jpg'%}">
+                              <div class="media-body">
+                                <h3 class="mb-1 f-20 txt-primary">MARK JECNO</h3>
+                                <p class="f-12">DESIGNER</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-xl-8">
+
+                  {% if form.errors %}
+			            <div class="alert alert-secondary" role="alert">
+                  <button class="btn-close" type="button" data-bs-dismiss="alert" aria-label="Close" data-bs-original-title="" title=""></button>
+                  <p>Your Form Has Errors...</p>
+                  {% for field in form %}
+            	      {% if field.errors  %}
+            		          {{ field.errors }}
+            	      {% endif %}
+
+                  {% endfor %}
+
+                  </div>
+
+
+		              {% endif %}
+
+                  <form class="card" method="post">
+                    <div class="card-header pb-0">
+                      <h4 class="card-title mb-0">Edit Profile</h4>
+                      <div class="card-options"><a class="card-options-collapse" href="#" data-bs-toggle="card-collapse"><i class="fe fe-chevron-up"></i></a><a class="card-options-remove" href="#" data-bs-toggle="card-remove"><i class="fe fe-x"></i></a></div>
+                    </div>
+                    <div class="card-body">
+                      {% csrf_token %}
+                      <div class="row">
+
+                        {{ form.as_p }}
+
+                      
+
+                      </div>
+                    </div>
+                    
+                    <div class="card-footer text-end">
+                     
+                      <button type="submit" value="Edit Profile" class="btn btn-primary" >Update Profile</button>
+                      <p><small><a href="{% url 'change_password' %}">Click Here</a> To Change Your Password</small></p>
+                    </div>
+                      
+                  </form>
+                  <!-- Container-fluid Ends-->
+                </div>
+              </div>
+            </div>
+          </div>
+{% endblock %}
