@@ -1,8 +1,13 @@
+from http.client import HTTPResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
 from .forms import SignUpForm, EditProfileForm
+from scripts.parameters import main_proccess
+from scripts.record_audio import run_mike
+from scripts.classes import record, start_recording, stop_recording
+# from scripts.parameters import run_mike
 
 def home(request):
 	return render(request, 'authenticate/home.html', {})
@@ -85,7 +90,7 @@ def estadisticas2(request):
 	return render(request, 'authenticate/estadisticas2.html', {})
 
 def historial(request):
-	return render(request, 'authenticate/historial.html', {})
+	return render(request, 'authenticate/historial.html', {}) 
 
 def reconocimiento(request):
 	return render(request, 'authenticate/reconocimiento-1.html', {})
@@ -98,3 +103,22 @@ def pendientes(request):
 
 def recomendaciones(request):
 	return render(request, 'authenticate/recomendaciones.html', {})
+
+def get_voice_parameters(request):
+	context = {'form': 1, "process": main_proccess()}
+	return render(request, 'authenticate/results.html', context)
+
+def record_audio(request):
+	start_recording()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def stop_audio(request):
+	stop_recording()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def record_with_keys(request):
+	record()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)

@@ -16,4 +16,7 @@ urlpatterns = [
     path('reconocimiento2', views.reconocimiento2, name='reconocimiento2'),
     path('pendientes', views.pendientes, name='pendientes'),
     path('recomendaciones', views.recomendaciones, name='recomendaciones'),
+    path('results', views.get_voice_parameters, name='results'),
+    path('record', views.record_with_keys, name='record'),
+    path('stop', views.stop_audio, name='stop'),
 ]
