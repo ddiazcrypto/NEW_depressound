@@ -6,8 +6,13 @@ from django.contrib import messages
 from .forms import SignUpForm, EditProfileForm
 from scripts.parameters import main_proccess
 from scripts.record_audio import run_mike
-from scripts.classes import record, start_recording, stop_recording
+from scripts.classes import record, start_recording, stop_recording, recorder, listener
+from pynput.keyboard import Key, Controller
 # from scripts.parameters import run_mike
+
+r = recorder("mic8.wav")
+l = listener(r)
+keyboard = Controller()
 
 def home(request):
 	return render(request, 'authenticate/home.html', {})
@@ -120,5 +125,20 @@ def stop_audio(request):
 
 def record_with_keys(request):
 	record()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def record2(request):
+	print('press q to start recording, press t to stop it')
+	l.start()
+	print("bri before keyboard")
+	keyboard.press('q')
+	l.join()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def stop2(request):
+	keyboard.press('t')
+	l.join()
 	context = {'form': 1, "process": "bri"}
 	return render(request, 'authenticate/results.html', context)

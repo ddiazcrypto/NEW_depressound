@@ -93,7 +93,7 @@ def measureFormants(sound, wave_file, f0min,f0max):
     
     return f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median
 
-def main_proccess(audio_file_name = "assets/triste1.wav"):
+def main_proccess(audio_file_name = "mic8.wav"):
 # create lists to put the results
     file_list = []
     duration_list = []
@@ -182,3 +182,5 @@ def main_proccess(audio_file_name = "assets/triste1.wav"):
             
     contiene, cantidad = find_depression_words(text)
     return f"Los datos contienen {cantidad} vulgaridades." if contiene else "Los datos no contienen vulgaridades."
+
+main_proccess()    

@@ -17,6 +17,6 @@ urlpatterns = [
     path('pendientes', views.pendientes, name='pendientes'),
     path('recomendaciones', views.recomendaciones, name='recomendaciones'),
     path('results', views.get_voice_parameters, name='results'),
-    path('record', views.record_with_keys, name='record'),
+    path('record', views.record2, name='record'),
     path('stop', views.stop_audio, name='stop'),
 ]

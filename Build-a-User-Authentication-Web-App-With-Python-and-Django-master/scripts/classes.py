@@ -69,20 +69,25 @@ class listener(keyboard.Listener):
                 
     def on_release(self, key):
         pass
-r = recorder("mic6.wav")
-l = listener(r)
 
 def start_recording():
+    r = recorder("mic6.wav")
+    l = listener(r)
     print('press q to record, press t to quit')
     r.start()
 
 def stop_recording():
+    r = recorder("mic6.wav")
+    l = listener(r)
     print('press q to record, press t to quit')
     r.stop()    
 
 def record():
-    print('press t to start recording, press q to stop it')
-    string = "This is what I typed"
-    kb.write(string)
+    r = recorder("mic6.wav")
+    l = listener(r)
+    print('press q to start recording, press t to stop it')
     l.start() #keyboard listener is a thread so we start it here
     l.join() #wait for the tread to terminate so the program doesn't instantly close
+    
+
+# record()    
