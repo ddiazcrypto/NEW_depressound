@@ -8,20 +8,35 @@ import numpy as np
 import pandas as pd
 import parselmouth 
 import statistics
-
 from parselmouth.praat import call
+mysp=__import__("my-voice-analysis")
 
+# PRAAT
 def find_depression_words(data):
     if data is None:
         raise Exception("Datos vacios")
     
+    words = data.split()
+    new_text = ""
+    word_count = 0
+    for word in words:
+        new_text += word + " "
+        word_count += 1
+        if word_count == 10:
+            new_text += ","
+            word_count = 0
+
+    words_splitted = new_text.split(',')
     count_depression_words = 0
     validator = Palabrota(countries=[Country.COLOMBIA, Country.VENEZUELA, Country.MEXICO, Country.ARGENTINA])
+
+    for texto in words_splitted:
+        print(texto)
+        if isinstance(texto, str):
+            es_palabrota = validator.contains_palabrota(texto)
+            if es_palabrota:
+                count_depression_words += 1
     
-    if isinstance(data, str):
-      is_depression_word = validator.contains_palabrota(data)
-      if is_depression_word:
-         count_depression_words += 1
     return (count_depression_words>0,count_depression_words)
 
 def measurePitch(voiceID, f0min, f0max, unit):
@@ -93,7 +108,7 @@ def measureFormants(sound, wave_file, f0min,f0max):
     
     return f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median
 
-def main_proccess(audio_file_name = "mic8.wav"):
+def main_proccess(audio_file_name = "mic9.wav"):
 # create lists to put the results
     file_list = []
     duration_list = []
@@ -121,7 +136,6 @@ def main_proccess(audio_file_name = "mic8.wav"):
     f4_median_list = []
 
     wave2_file = glob.glob(audio_file_name)
-    print("wave2_file + ", wave2_file[0])
     sound = parselmouth.Sound(wave2_file[0])
     (duration, meanF0, stdevF0, hnr, localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, ddpJitter, 
     localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer, apq11Shimmer, ddaShimmer) = measurePitch(
@@ -155,32 +169,32 @@ def main_proccess(audio_file_name = "mic8.wav"):
     f1_median_list.append(f1_median)
     f2_median_list.append(f2_median)
     f3_median_list.append(f3_median)
-    f4_median_list.append(f4_median)        
+    f4_median_list.append(f4_median)
     
 
     print('localJitter ', localJitter_list[0])
     print('localShimmer_list ', localShimmer_list[0])
     print('f1_mean_list ', f1_mean_list[0])
     print('f2_mean_list ', f2_mean_list[0])
-    print("finished")
 
     r = sr.Recognizer()
 
 
     with sr.AudioFile(audio_file_name) as source:
-        
         audio_text = r.listen(source)
-        
         try:
             text = r.recognize_google(audio_text, language="es-PE")
             print(text)
-        
         except:
             print('Sorry.. run again...')
 
-
-            
     contiene, cantidad = find_depression_words(text)
     return f"Los datos contienen {cantidad} vulgaridades." if contiene else "Los datos no contienen vulgaridades."
 
-main_proccess()    
+def male_female(audio_file_name = "mic9.wav"):
+    p= ""
+    c= audio_file_name
+    mysp.myspgend(p,c)
+
+def retrieve_all_results():
+    pass

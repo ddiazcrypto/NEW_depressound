@@ -10,7 +10,7 @@ from scripts.classes import record, start_recording, stop_recording, recorder, l
 from pynput.keyboard import Key, Controller
 # from scripts.parameters import run_mike
 
-r = recorder("mic8.wav")
+r = recorder("mic9.wav")
 l = listener(r)
 keyboard = Controller()
 
@@ -92,6 +92,7 @@ def estadisticas(request):
 	return render(request, 'authenticate/estadisticas.html', {})
 
 def estadisticas2(request):
+	# call to backend with the results
 	return render(request, 'authenticate/estadisticas2.html', {})
 
 def historial(request):
@@ -129,13 +130,15 @@ def record_with_keys(request):
 	return render(request, 'authenticate/results.html', context)
 
 def record2(request):
-	print('press q to start recording, press t to stop it')
+	print('q to start recording, t to stop it')
 	l.start()
-	print("bri before keyboard")
 	keyboard.press('q')
 	l.join()
-	context = {'form': 1, "process": "bri"}
-	return render(request, 'authenticate/results.html', context)
+	last_file_name = ''
+	# call to backend to retrieve last recorded audio
+	# insert into table of statistics
+	return redirect('estadisticas2')
+	# return render(request, 'authenticate/estadisticas2.html', context)
 
 def stop2(request):
 	keyboard.press('t')
