@@ -31,7 +31,7 @@ def find_depression_words(data):
     validator = Palabrota(countries=[Country.COLOMBIA, Country.VENEZUELA, Country.MEXICO, Country.ARGENTINA])
 
     for texto in words_splitted:
-        print(texto)
+        print('texto ', texto)
         if isinstance(texto, str):
             es_palabrota = validator.contains_palabrota(texto)
             if es_palabrota:
@@ -136,12 +136,16 @@ def main_proccess(audio_file_name = "mic9.wav"):
     f4_median_list = []
 
     wave2_file = glob.glob(audio_file_name)
+
     sound = parselmouth.Sound(wave2_file[0])
+
     (duration, meanF0, stdevF0, hnr, localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, ddpJitter, 
     localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer, apq11Shimmer, ddaShimmer) = measurePitch(
         sound, 75, 300, "Hertz")
+
     (f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median) = measureFormants(
         sound, wave2_file[0], 75, 300)
+
     file_list.append(wave2_file[0]) # make an ID list
     duration_list.append(duration) # make duration list
     mean_F0_list.append(meanF0) # make a mean F0 list
@@ -170,31 +174,27 @@ def main_proccess(audio_file_name = "mic9.wav"):
     f2_median_list.append(f2_median)
     f3_median_list.append(f3_median)
     f4_median_list.append(f4_median)
-    
-
-    print('localJitter ', localJitter_list[0])
-    print('localShimmer_list ', localShimmer_list[0])
-    print('f1_mean_list ', f1_mean_list[0])
-    print('f2_mean_list ', f2_mean_list[0])
-
     r = sr.Recognizer()
-
 
     with sr.AudioFile(audio_file_name) as source:
         audio_text = r.listen(source)
         try:
             text = r.recognize_google(audio_text, language="es-PE")
-            print(text)
         except:
             print('Sorry.. run again...')
 
     contiene, cantidad = find_depression_words(text)
-    return f"Los datos contienen {cantidad} vulgaridades." if contiene else "Los datos no contienen vulgaridades."
+
+    return localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad
 
 def male_female(audio_file_name = "mic9.wav"):
     p= ""
     c= audio_file_name
-    mysp.myspgend(p,c)
+    results = mysp.myspgend(p,c)
+    return results
 
-def retrieve_all_results():
-    pass
+def retrieve_all_results(audio_file_name = "mic9.wav"):
+    # formulas
+    results = male_female(audio_file_name)
+    localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad = main_proccess(audio_file_name = "mic9.wav")
+    return results, localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad

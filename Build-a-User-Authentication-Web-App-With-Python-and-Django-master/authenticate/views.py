@@ -4,13 +4,13 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
 from .forms import SignUpForm, EditProfileForm
-from scripts.parameters import main_proccess
+from scripts.parameters import main_proccess, retrieve_all_results
 from scripts.record_audio import run_mike
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
 from pynput.keyboard import Key, Controller
 # from scripts.parameters import run_mike
 
-r = recorder("mic9.wav")
+r = recorder("mic10.wav")
 l = listener(r)
 keyboard = Controller()
 
@@ -134,9 +134,11 @@ def record2(request):
 	l.start()
 	keyboard.press('q')
 	l.join()
-	last_file_name = ''
 	# call to backend to retrieve last recorded audio
+	last_file_name = 'mic9.wav'
 	# insert into table of statistics
+	results = retrieve_all_results(last_file_name)
+	print('results ', results)
 	return redirect('estadisticas2')
 	# return render(request, 'authenticate/estadisticas2.html', context)
 
