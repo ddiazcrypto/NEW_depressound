@@ -188,10 +188,12 @@ def main_proccess(audio_file_name = "mic9.wav"):
     return localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad
 
 def male_female(audio_file_name = "mic9.wav"):
-    p= ""
-    c= audio_file_name
-    results = mysp.myspgend(p,c)
-    return results
+    mysp=__import__("my-voice-analysis")                     
+    p="mic10" # Audio File title
+    c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
+    text = mysp.myspgend(p,c)
+    print('text ', text)
+    return text
 
 def retrieve_all_results(audio_file_name = "mic9.wav"):
     # formulas
