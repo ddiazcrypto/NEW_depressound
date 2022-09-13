@@ -189,8 +189,11 @@ def main_proccess(audio_file_name):
     return localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
 
 def male_female(audio_file_name):
+    # example: audio is located in D:\audios\audio1.wav
+    # so, p = audio1 ... don't add .wav
+    # c = D:\audios ... don't add last \
     mysp=__import__("my-voice-analysis")                     
-    p=audio_file_name # Audio File title
+    p=audio_file_name # Audio File title without .wav
     c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
     text = mysp.myspgend(p,c)
     print('text ', text)
@@ -198,6 +201,6 @@ def male_female(audio_file_name):
 
 def retrieve_all_results(audio_file_name):
     # formulas
-    results = male_female(audio_file_name)
+    gender = male_female(audio_file_name)
     localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad = main_proccess(audio_file_name)
-    return results, localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
+    return gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
