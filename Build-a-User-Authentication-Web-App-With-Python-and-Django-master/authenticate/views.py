@@ -1,8 +1,27 @@
+from http.client import HTTPResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages 
 from .forms import SignUpForm, EditProfileForm
+from scripts.parameters import main_proccess, retrieve_all_results
+from scripts.record_audio import run_mike
+from scripts.classes import record, start_recording, stop_recording, recorder, listener
+from pynput.keyboard import Key, Controller
+from scripts.calculate import calculation
+import datetime
+
+# from scripts.parameters import run_mike
+date_str = datetime.datetime.now().timestamp()
+date_str = str(datetime.datetime.now().timestamp())
+date_str = date_str.split('.')
+date_str = date_str[0] + date_str[1]
+print(date_str)
+
+set_file_name = date_str
+r = recorder(set_file_name + ".wav")
+l = listener(r)
+keyboard = Controller()
 
 def home(request):
 	return render(request, 'authenticate/home.html', {})
@@ -82,10 +101,11 @@ def estadisticas(request):
 	return render(request, 'authenticate/estadisticas.html', {})
 
 def estadisticas2(request):
+	# call to backend with the results
 	return render(request, 'authenticate/estadisticas2.html', {})
 
 def historial(request):
-	return render(request, 'authenticate/historial.html', {})
+	return render(request, 'authenticate/historial.html', {}) 
 
 def reconocimiento(request):
 	return render(request, 'authenticate/reconocimiento-1.html', {})
@@ -98,3 +118,39 @@ def pendientes(request):
 
 def recomendaciones(request):
 	return render(request, 'authenticate/recomendaciones.html', {})
+
+def get_voice_parameters(request):
+	context = {'form': 1, "process": main_proccess()}
+	return render(request, 'authenticate/results.html', context)
+
+def record_audio(request):
+	start_recording()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def stop_audio(request):
+	stop_recording()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def record_with_keys(request):
+	record()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
+
+def record2(request):
+	print('q to start recording, t to stop it')
+	l.start()
+	keyboard.press('q')
+	l.join()
+	# call to backend to retrieve last recorded audio
+	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, quantity_depression_words = retrieve_all_results(set_file_name)
+	resulting_text, resulting_num = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, quantity_depression_words)
+	# insert into table of statistics
+	return redirect('estadisticas2')
+
+def stop2(request):
+	keyboard.press('t')
+	l.join()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
