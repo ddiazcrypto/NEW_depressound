@@ -195,8 +195,9 @@ def male_female(audio_file_name):
     mysp=__import__("my-voice-analysis")                     
     p=audio_file_name # Audio File title without .wav
     c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
+
+    file = open('log.txt', 'w')
     text = mysp.myspgend(p,c)
-    print('text ', text)
     return text
 
 def retrieve_all_results(audio_file_name):

@@ -16,7 +16,6 @@ date_str = datetime.datetime.now().timestamp()
 date_str = str(datetime.datetime.now().timestamp())
 date_str = date_str.split('.')
 date_str = date_str[0] + date_str[1]
-print(date_str)
 
 set_file_name = date_str
 r = recorder(set_file_name + ".wav")
