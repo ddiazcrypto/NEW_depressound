@@ -1,11 +1,13 @@
-def calculation(jitter, shimmer, f1, f2, hnr, gender):
+def calculation(jitter, shimmer, f1, f2, hnr, gender,quantity_depression_words):
     # gender 1 male, 2 female
+    calculated_result = 0
     if gender == 1:
-        return calculate_male(jitter, shimmer, f1, f2, hnr)
+        calculated_result = calculate_male(jitter, shimmer, f1, f2, hnr,quantity_depression_words)
     else:
-        return calculate_female(jitter, shimmer, f1, f2, hnr)
+        calculated_result =  calculate_female(jitter, shimmer, f1, f2, hnr,quantity_depression_words)
+    return result(calculated_result), calculated_result    
 
-def calculate_male(jitter, shimmer, f1, f2, hnr):
+def calculate_male(jitter, shimmer, f1, f2, hnr, quantity_depression_words):
     total_sum = 0
     if shimmer >= 0.1365 and shimmer <= 0.207:
         total_sum += 2.5
@@ -21,7 +23,7 @@ def calculate_male(jitter, shimmer, f1, f2, hnr):
 
 
 
-def calculate_female(jitter, shimmer, f1, f2, hnr):
+def calculate_female(jitter, shimmer, f1, f2, hnr,quantity_depression_words):
     total_sum = 0
     if shimmer >= 0.133 and shimmer <= 0.177:
         total_sum += 2.5
