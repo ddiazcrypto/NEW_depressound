@@ -108,7 +108,7 @@ def measureFormants(sound, wave_file, f0min,f0max):
     
     return f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median
 
-def main_proccess(audio_file_name = "mic9.wav"):
+def main_proccess(audio_file_name):
 # create lists to put the results
     file_list = []
     duration_list = []
@@ -135,10 +135,11 @@ def main_proccess(audio_file_name = "mic9.wav"):
     f3_median_list = []
     f4_median_list = []
 
-    wave2_file = glob.glob(audio_file_name)
+    wave2_file = glob.glob(audio_file_name+'.wav')
 
     sound = parselmouth.Sound(wave2_file[0])
 
+# local shimmer, local jitter, f1_mean, f2_mean, hnr
     (duration, meanF0, stdevF0, hnr, localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, ddpJitter, 
     localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer, apq11Shimmer, ddaShimmer) = measurePitch(
         sound, 75, 300, "Hertz")
@@ -176,7 +177,7 @@ def main_proccess(audio_file_name = "mic9.wav"):
     f4_median_list.append(f4_median)
     r = sr.Recognizer()
 
-    with sr.AudioFile(audio_file_name) as source:
+    with sr.AudioFile(audio_file_name+'.wav') as source:
         audio_text = r.listen(source)
         try:
             text = r.recognize_google(audio_text, language="es-PE")
@@ -185,18 +186,18 @@ def main_proccess(audio_file_name = "mic9.wav"):
 
     contiene, cantidad = find_depression_words(text)
 
-    return localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad
+    return localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
 
-def male_female(audio_file_name = "mic9.wav"):
+def male_female(audio_file_name):
     mysp=__import__("my-voice-analysis")                     
-    p="mic10" # Audio File title
+    p=audio_file_name # Audio File title
     c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
     text = mysp.myspgend(p,c)
     print('text ', text)
     return text
 
-def retrieve_all_results(audio_file_name = "mic9.wav"):
+def retrieve_all_results(audio_file_name):
     # formulas
     results = male_female(audio_file_name)
-    localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad = main_proccess(audio_file_name = "mic9.wav")
-    return results, localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad
+    localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad = main_proccess(audio_file_name)
+    return results, localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
