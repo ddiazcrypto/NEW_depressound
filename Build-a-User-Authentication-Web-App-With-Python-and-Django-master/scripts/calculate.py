@@ -1,5 +1,3 @@
-import sys
-
 def calculation(jitter, shimmer, f1, f2, hnr, gender,quantity_depression_words):
     # gender 1 male, 2 female
     calculated_result = 0
@@ -51,33 +49,3 @@ def result(calculation):
         return 'Depresion moderadamente severa'
     elif (calculation > 8.5 and calculation <= 10):
         return 'Depresion muy severa'
-
-def find_word_in_print():
-    file = open('log.txt', 'w')
-    print('This is a sample print male', file = file)
-    file.close()
-    file1 = open("log.txt","r+")
-    str_file1 =  file1.read()
-    str_file = str_file1.split()
-    print(str_file)
-    file1.close()
-
-    if 'male' in str_file:
-        print("success")        
-
-def get_sys():
-    original_stdout = sys.stdout 
-
-    # Create or open an existing file in write mode
-    with open('log.txt', 'w') as file:
-        # Set the stdout to file object
-        sys.stdout = file
-        print('File Mode: Print text to a file. bru')
-        
-        # Set the stdout back to the original or default mode
-        sys.stdout = original_stdout
-
-    with open('log.txt', 'r') as reader:
-        # Read & print the entire file
-        printed_text = reader.read()
-        print(printed_text)        
