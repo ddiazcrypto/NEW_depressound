@@ -200,12 +200,10 @@ def male_female(audio_file_name):
     c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
 
     with open('log.txt', 'w') as file:
-        # Set the stdout to file object
         sys.stdout = file
         mysp.myspgend(p,c)
         sys.stdout = original_stdout
     with open('log.txt', 'r') as reader:
-        # Read & print the entire file
         printed_text = reader.read()
         str_file = printed_text.split()
         if 'male' in str_file:

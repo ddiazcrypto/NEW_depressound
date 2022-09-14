@@ -21,8 +21,6 @@ def calculate_male(jitter, shimmer, f1, f2, hnr, quantity_depression_words):
         total_sum += 1.5
     return total_sum    
 
-
-
 def calculate_female(jitter, shimmer, f1, f2, hnr,quantity_depression_words):
     total_sum = 0
     if shimmer >= 0.133 and shimmer <= 0.177:
