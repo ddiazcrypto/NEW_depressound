@@ -9,6 +9,7 @@ import pandas as pd
 import parselmouth 
 import statistics
 from parselmouth.praat import call
+import sys
 mysp=__import__("my-voice-analysis")
 
 # PRAAT
@@ -192,12 +193,25 @@ def male_female(audio_file_name):
     # example: audio is located in D:\audios\audio1.wav
     # so, p = audio1 ... don't add .wav
     # c = D:\audios ... don't add last \
-    mysp=__import__("my-voice-analysis")                     
+    mysp=__import__("my-voice-analysis")
+    original_stdout = sys.stdout
+    gender_num = 4
     p=audio_file_name # Audio File title without .wav
     c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
-    text = mysp.myspgend(p,c)
-    print('text ', text)
-    return text
+
+    with open('log.txt', 'w') as file:
+        sys.stdout = file
+        mysp.myspgend(p,c)
+        sys.stdout = original_stdout
+    with open('log.txt', 'r') as reader:
+        printed_text = reader.read()
+        str_file = printed_text.split()
+        if 'male' in str_file:
+            gender_num = 1
+        elif 'female' in str_file:
+            gender_num = 0
+        print(printed_text)    
+    return gender_num
 
 def retrieve_all_results(audio_file_name):
     # formulas
