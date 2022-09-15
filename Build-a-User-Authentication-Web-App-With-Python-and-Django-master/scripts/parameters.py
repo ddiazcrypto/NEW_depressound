@@ -12,33 +12,86 @@ from parselmouth.praat import call
 import sys
 mysp=__import__("my-voice-analysis")
 
-# PRAAT
+# Calculations
+
+def evaluate_pc(pc):
+    if pc <= 0.10:
+        return 0
+    elif pc >= 0.11 and pc <= 0.20:
+        return 3    
+    elif pc >= 0.21 and pc <= 0.25:
+        return 5
+    elif pc > 0.25:
+        return 10
+
+def evaluate_p1(p1):
+    if p1 <= 0.10:
+        return 0
+    elif p1 >= 0.11 and p1 <= 0.20:
+        return 5
+    elif p1 > 0.20:
+        return 10
+
+def evaluate_p2(p2):
+    if p2 <= 0.05:
+        return 0
+    elif p2 > 0.05 and p2 <= 0.10:
+        return 1    
+    elif p2 > 0.10:
+        return 5
+
+def evaluate_p12(p12):
+    if p12 <=0.30:
+        return 5
+    else:
+        return 0                          
+
 def find_depression_words(data):
     if data is None:
-        raise Exception("Datos vacios")
+        raise Exception("Empty Data")
     
     words = data.split()
     new_text = ""
     word_count = 0
+    word_total_count_pt = 0
     for word in words:
         new_text += word + " "
         word_count += 1
         if word_count == 10:
             new_text += ","
             word_count = 0
+        word_total_count_pt += 1    
 
     words_splitted = new_text.split(',')
-    count_depression_words = 0
-    validator = Palabrota(countries=[Country.COLOMBIA, Country.VENEZUELA, Country.MEXICO, Country.ARGENTINA])
+    count_depression_words_pc = 0
+    count_depression_words_p1 = 0
+    count_depression_words_p2 = 0
+    validator_pc = Palabrota(countries=[Country.COLOMBIA]) # depression words
+    validator_p1 = Palabrota(countries=[Country.VENEZUELA]) # 1st person pronouns
+    validator_p2 = Palabrota(countries=[Country.MEXICO]) #2nd and 3rd person pronouns
 
     for texto in words_splitted:
         print('texto ', texto)
         if isinstance(texto, str):
-            es_palabrota = validator.contains_palabrota(texto)
-            if es_palabrota:
-                count_depression_words += 1
+            is_depression_word_pc = validator_pc.contains_palabrota(texto)
+            is_depression_word_p1 = validator_p1.contains_palabrota(texto)
+            is_depression_word_p2 = validator_p2.contains_palabrota(texto)
+
+            if is_depression_word_pc:
+                count_depression_words_pc += 1
+            if is_depression_word_p1:
+                count_depression_words_p1 += 1    
+            if is_depression_word_p2:
+                count_depression_words_p2 += 1    
     
-    return (count_depression_words>0,count_depression_words)
+    pc_percentage = (count_depression_words_pc * 100)/word_total_count_pt
+    p1_percentage = (count_depression_words_p1 * 100)/word_total_count_pt
+    p2_percentage = (count_depression_words_p2 * 100)/word_total_count_pt
+    p12_percentage = (p2_percentage * 100)/p1_percentage
+
+    total_evaluated_words = evaluate_pc(pc_percentage) + evaluate_p1(p1_percentage) + evaluate_p2(p2_percentage) + evaluate_p12(p12_percentage)
+
+    return total_evaluated_words
 
 def measurePitch(voiceID, f0min, f0max, unit):
     sound = parselmouth.Sound(voiceID) # read the sound
@@ -185,9 +238,9 @@ def main_proccess(audio_file_name):
         except:
             print('Sorry.. run again...')
 
-    contiene, cantidad = find_depression_words(text)
+    total_evaluated_words = find_depression_words(text)
 
-    return localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
+    return localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words
 
 def male_female(audio_file_name):
     # example: audio is located in D:\audios\audio1.wav
@@ -216,5 +269,5 @@ def male_female(audio_file_name):
 def retrieve_all_results(audio_file_name):
     # formulas
     gender = male_female(audio_file_name)
-    localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad = main_proccess(audio_file_name)
-    return gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, cantidad
+    localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = main_proccess(audio_file_name)
+    return gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words
