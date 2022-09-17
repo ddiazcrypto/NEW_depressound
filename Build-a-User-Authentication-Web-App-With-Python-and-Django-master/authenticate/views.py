@@ -145,7 +145,6 @@ def record2(request):
 	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
 	print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean, ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
 	resulting_text, resulting_description = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
-	print('last results')
 	print('resulting_text ', resulting_text)
 	print('resulting_num ', resulting_description)
 	# insert into table of statistics resulting_text, resulting_description
