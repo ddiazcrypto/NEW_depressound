@@ -16,7 +16,6 @@ date_str = datetime.datetime.now().timestamp()
 date_str = str(datetime.datetime.now().timestamp())
 date_str = date_str.split('.')
 date_str = date_str[0] + date_str[1]
-
 set_file_name = date_str
 r = recorder(set_file_name + ".wav")
 l = listener(r)
@@ -145,10 +144,11 @@ def record2(request):
 	# call to backend to retrieve last recorded audio
 	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
 	print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean, ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
-	resulting_text, resulting_num = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
+	resulting_text, resulting_description = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
+	print('last results')
 	print('resulting_text ', resulting_text)
-	print('resulting_num ', resulting_num)
-	# insert into table of statistics resulting_text, resulting_num
+	print('resulting_num ', resulting_description)
+	# insert into table of statistics resulting_text, resulting_description
 	return redirect('estadisticas2')
 
 def stop2(request):
