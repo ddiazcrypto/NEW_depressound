@@ -15,33 +15,33 @@ mysp=__import__("my-voice-analysis")
 # Calculations
 
 def evaluate_pc(pc):
-    if pc <= 0.10:
+    if pc <=10:
         return 0
-    elif pc >= 0.11 and pc <= 0.20:
+    elif pc >= 11 and pc <= 20:
         return 3    
-    elif pc >= 0.21 and pc <= 0.25:
+    elif pc >= 21 and pc <= 25:
         return 5
-    elif pc > 0.25:
+    elif pc > 25:
         return 10
 
 def evaluate_p1(p1):
-    if p1 <= 0.10:
+    if p1 <= 10:
         return 0
-    elif p1 >= 0.11 and p1 <= 0.20:
+    elif p1 >= 11 and p1 <= 20:
         return 5
-    elif p1 > 0.20:
+    elif p1 > 20:
         return 10
 
 def evaluate_p2(p2):
-    if p2 <= 0.05:
+    if p2 <= 5:
         return 0
-    elif p2 > 0.05 and p2 <= 0.10:
+    elif p2 > 5 and p2 <= 10:
         return 1    
-    elif p2 > 0.10:
+    elif p2 > 10:
         return 5
 
 def evaluate_p12(p12):
-    if p12 <=0.30:
+    if p12 <= 30:
         return 5
     else:
         return 0                          
@@ -86,11 +86,18 @@ def find_depression_words(data):
     
     pc_percentage = (count_depression_words_pc * 100)/word_total_count_pt
     p1_percentage = (count_depression_words_p1 * 100)/word_total_count_pt
-    p2_percentage = (count_depression_words_p2 * 100)/word_total_count_pt
-    p12_percentage = (p2_percentage * 100)/p1_percentage
+    p2_percentage = (count_depression_words_p2 * 100)/word_total_count_pt    
+    p12_percentage = 0
+    if p1_percentage == 0: p12_percentage = 0
+    else: p12_percentage = (p2_percentage * 100)/p1_percentage
+
+    print('pc_percentage ', pc_percentage)
+    print('p1_percentage ', p1_percentage)
+    print('p2_percentage ', p2_percentage)
+    print('p12_percentage ', p12_percentage)
 
     total_evaluated_words = evaluate_pc(pc_percentage) + evaluate_p1(p1_percentage) + evaluate_p2(p2_percentage) + evaluate_p12(p12_percentage)
-
+    print('total_evaluated_words ', total_evaluated_words)
     return total_evaluated_words
 
 def measurePitch(voiceID, f0min, f0max, unit):
