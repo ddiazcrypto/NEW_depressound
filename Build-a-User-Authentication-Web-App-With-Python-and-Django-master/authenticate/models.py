@@ -1,11 +1,6 @@
 from django.db import models
 
 # Create your models here.
-class Usuario(models.Model):
-    Usuario_Codigo = models.PositiveIntegerField(primary_key=True)
-    Usuario_Correo = models.CharField(max_length=40)
-    Usuario_Contrasena = models.CharField(max_length=40)
-    Usuario_Rol = models.CharField(max_length=40)
 
 class Paciente(models.Model):
     Paciente_Codigo = models.PositiveIntegerField(primary_key=True)
@@ -15,10 +10,9 @@ class Paciente(models.Model):
     Paciente_Departamento = models.CharField(max_length=40)
     Paciente_Telefono = models.CharField(max_length=9)
     Paciente_DNI = models.CharField(max_length=8)
-    Usuario_Usuario_Codigo = models.OneToOneField(
-        Usuario,
-        on_delete=models.CASCADE
-    )
+    Paciente_Correo = models.CharField(max_length=40, default='-')
+    Paciente_Contrasena = models.CharField(max_length=40, default='-')
+    Paciente_Rol = models.CharField(max_length=40, default='-')
 
 class Formulario(models.Model):
     Formulario_Codigo = models.PositiveIntegerField(primary_key=True)
@@ -37,7 +31,7 @@ class Resultado(models.Model):
     Resultado_Codigo = models.PositiveIntegerField(primary_key=True)
     Encuesta_Encuesta_Codigo = models.ForeignKey(Encuesta, on_delete=models.CASCADE)
     Resultado_Diagnostico = models.CharField(max_length=80)
-    Resultado_Descripcion = models.CharField(max_length=80)
+    Resultado_Descripcion = models.CharField(max_length=200)
     Resultado_Recomendacion = models.CharField(max_length=140)
     Resultado_Fecha = models.DateField()
 
