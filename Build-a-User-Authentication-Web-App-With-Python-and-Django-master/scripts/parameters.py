@@ -257,7 +257,7 @@ def male_female(audio_file_name):
     original_stdout = sys.stdout
     gender_num = 4
     p=audio_file_name # Audio File title without .wav
-    c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
+    c=r"D:\Documentos\GitHub\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
 
     with open('log.txt', 'w') as file:
         sys.stdout = file
