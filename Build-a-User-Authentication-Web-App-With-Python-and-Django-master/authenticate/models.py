@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Paciente(models.Model):
-    Paciente_Codigo = models.AutoField(primary_key=True)
+    Paciente_Codigo = models.BigIntegerField(primary_key=True)
     Paciente_Nombre = models.CharField(max_length=40)
     Paciente_Apellidos = models.CharField(max_length=40)
     Paciente_Usuario = models.CharField(max_length=40, default='')

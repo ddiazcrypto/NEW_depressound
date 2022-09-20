@@ -63,8 +63,9 @@ def register_user(request):
 			password = form.cleaned_data['password1']
 			user = authenticate(username=username, password=password)
 			login(request, user)
-
+			
 			paciente = Paciente.objects.create(
+				Paciente_Codigo = user.id,
 				Paciente_Nombre = first_name,
 				Paciente_Apellidos = last_name,
 				Paciente_Usuario = username,
@@ -174,7 +175,10 @@ def record_with_keys(request):
 	return render(request, 'authenticate/results.html', context)
 
 def record2(request):
-	encuesta = Encuesta.objects.get(Encuesta_Codigo = 1)
+	
+	print(request.user.id)
+	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
+	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
 	print('q to start recording, t to stop it')
 	l.start()
 	keyboard.press('q')
