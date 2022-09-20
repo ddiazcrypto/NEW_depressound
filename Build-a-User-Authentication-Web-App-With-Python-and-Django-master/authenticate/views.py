@@ -1,4 +1,6 @@
+from asyncio.windows_events import NULL
 from http.client import HTTPResponse
+from .models import *
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
@@ -55,9 +57,44 @@ def register_user(request):
 		if form.is_valid():
 			form.save()
 			username = form.cleaned_data['username']
+			first_name = form.cleaned_data['first_name']
+			last_name = form.cleaned_data['last_name']
+			email = form.cleaned_data['email']
 			password = form.cleaned_data['password1']
 			user = authenticate(username=username, password=password)
 			login(request, user)
+
+			paciente = Paciente.objects.create(
+				Paciente_Nombre = first_name,
+				Paciente_Apellidos = last_name,
+				Paciente_Usuario = username,
+				Paciente_Edad = NULL,
+				Paciente_Departamento = NULL,
+				Paciente_Telefono = NULL,
+				Paciente_DNI = NULL,
+				Paciente_Correo = email,
+				Paciente_Contrasena = password,
+				Paciente_Rol = NULL,
+			)
+
+			formulario_titulo = ("formulario_"+username)
+			formulario_detalle = ("Formulario asignado al usuario: "+username)
+
+			formulario = Formulario.objects.create(
+				Formulario_Titulo = formulario_titulo,
+    			Formulario_FechaCreacion = datetime.datetime.now(),
+    			Formulario_Detalle = formulario_detalle
+			)
+
+			encuesta_detalle = ("Encuesta asignada al usuario: "+username)
+
+			encuesta = Encuesta.objects.create(
+    			Paciente_Paciente_Codigo = paciente,
+    			Formulario_Formulario_Codigo = formulario,
+    			Encuesta_FechaCompletado = datetime.datetime.now(),
+    			Encuesta_Detalle = encuesta_detalle
+			)
+
 			messages.success(request, ('You Have Registered...'))
 			return redirect('home_login')
 	else:
@@ -137,6 +174,7 @@ def record_with_keys(request):
 	return render(request, 'authenticate/results.html', context)
 
 def record2(request):
+	encuesta = Encuesta.objects.get(Encuesta_Codigo = 1)
 	print('q to start recording, t to stop it')
 	l.start()
 	keyboard.press('q')
@@ -148,6 +186,14 @@ def record2(request):
 	print('resulting_text ', resulting_text)
 	print('resulting_num ', resulting_description)
 	# insert into table of statistics resulting_text, resulting_description
+
+	resultado = Resultado.objects.create(
+    			Encuesta_Encuesta_Codigo = encuesta,
+    			Resultado_Diagnostico = resulting_text,
+    			Resultado_Descripcion = resulting_description,
+    			Resultado_Recomendacion = NULL, 
+    			Resultado_Fecha = datetime.datetime.now()
+			)
 	return redirect('estadisticas2')
 
 def stop2(request):
