@@ -18,5 +18,5 @@ urlpatterns = [
     path('recomendaciones', views.recomendaciones, name='recomendaciones'),
     path('results', views.get_voice_parameters, name='results'),
     path('record', views.record2, name='record'),
-    path('stop', views.stop2, name='stop'),
+    path('stop', views.stop_audio, name='stop'),
 ]

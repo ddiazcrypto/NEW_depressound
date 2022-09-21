@@ -9,100 +9,35 @@ import pandas as pd
 import parselmouth 
 import statistics
 from parselmouth.praat import call
-import sys
 mysp=__import__("my-voice-analysis")
 
-# Calculations
-
-def evaluate_pc(pc):
-    if pc <=10:
-        return 0
-    elif pc >= 11 and pc <= 20:
-        return 3    
-    elif pc >= 21 and pc <= 25:
-        return 5
-    elif pc > 25:
-        return 10
-    return 0    
-
-def evaluate_p1(p1):
-    if p1 <= 10:
-        return 0
-    elif p1 >= 11 and p1 <= 20:
-        return 5
-    elif p1 > 20:
-        return 10
-    return 0    
-
-def evaluate_p2(p2):
-    if p2 <= 5:
-        return 0
-    elif p2 > 5 and p2 <= 10:
-        return 1    
-    elif p2 > 10:
-        return 5
-    return 0    
-
-def evaluate_p12(p12):
-    if p12 <= 30:
-        return 5
-    else:
-        return 0
-    return 0                              
-
+# PRAAT
 def find_depression_words(data):
     if data is None:
-        raise Exception("Empty Data")
+        raise Exception("Datos vacios")
     
     words = data.split()
     new_text = ""
     word_count = 0
-    word_total_count_pt = 0
     for word in words:
         new_text += word + " "
         word_count += 1
         if word_count == 10:
             new_text += ","
             word_count = 0
-        word_total_count_pt += 1    
 
     words_splitted = new_text.split(',')
-    count_depression_words_pc = 0
-    count_depression_words_p1 = 0
-    count_depression_words_p2 = 0
-    validator_pc = Palabrota(countries=[Country.COLOMBIA]) # depression words
-    validator_p1 = Palabrota(countries=[Country.VENEZUELA]) # 1st person pronouns
-    validator_p2 = Palabrota(countries=[Country.MEXICO]) #2nd and 3rd person pronouns
+    count_depression_words = 0
+    validator = Palabrota(countries=[Country.COLOMBIA, Country.VENEZUELA, Country.MEXICO, Country.ARGENTINA])
 
     for texto in words_splitted:
         print('texto ', texto)
         if isinstance(texto, str):
-            is_depression_word_pc = validator_pc.contains_palabrota(texto)
-            is_depression_word_p1 = validator_p1.contains_palabrota(texto)
-            is_depression_word_p2 = validator_p2.contains_palabrota(texto)
-
-            if is_depression_word_pc:
-                count_depression_words_pc += 1
-            if is_depression_word_p1:
-                count_depression_words_p1 += 1    
-            if is_depression_word_p2:
-                count_depression_words_p2 += 1    
+            es_palabrota = validator.contains_palabrota(texto)
+            if es_palabrota:
+                count_depression_words += 1
     
-    pc_percentage = (count_depression_words_pc * 100)/word_total_count_pt
-    p1_percentage = (count_depression_words_p1 * 100)/word_total_count_pt
-    p2_percentage = (count_depression_words_p2 * 100)/word_total_count_pt    
-    p12_percentage = 0
-    if p1_percentage == 0: p12_percentage = 0
-    else: p12_percentage = (p2_percentage * 100)/p1_percentage
-
-    print('pc_percentage ', pc_percentage)
-    print('p1_percentage ', p1_percentage)
-    print('p2_percentage ', p2_percentage)
-    print('p12_percentage ', p12_percentage)
-
-    total_evaluated_words = evaluate_pc(pc_percentage) + evaluate_p1(p1_percentage) + evaluate_p2(p2_percentage) + evaluate_p12(p12_percentage)
-    print('total_evaluated_words ', total_evaluated_words)
-    return total_evaluated_words
+    return (count_depression_words>0,count_depression_words)
 
 def measurePitch(voiceID, f0min, f0max, unit):
     sound = parselmouth.Sound(voiceID) # read the sound
@@ -173,7 +108,7 @@ def measureFormants(sound, wave_file, f0min,f0max):
     
     return f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median
 
-def main_proccess(audio_file_name):
+def main_proccess(audio_file_name = "mic9.wav"):
 # create lists to put the results
     file_list = []
     duration_list = []
@@ -200,11 +135,10 @@ def main_proccess(audio_file_name):
     f3_median_list = []
     f4_median_list = []
 
-    wave2_file = glob.glob(audio_file_name+'.wav')
+    wave2_file = glob.glob(audio_file_name)
 
     sound = parselmouth.Sound(wave2_file[0])
 
-# local shimmer, local jitter, f1_mean, f2_mean, hnr
     (duration, meanF0, stdevF0, hnr, localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, ddpJitter, 
     localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer, apq11Shimmer, ddaShimmer) = measurePitch(
         sound, 75, 300, "Hertz")
@@ -242,43 +176,27 @@ def main_proccess(audio_file_name):
     f4_median_list.append(f4_median)
     r = sr.Recognizer()
 
-    with sr.AudioFile(audio_file_name+'.wav') as source:
+    with sr.AudioFile(audio_file_name) as source:
         audio_text = r.listen(source)
         try:
             text = r.recognize_google(audio_text, language="es-PE")
         except:
             print('Sorry.. run again...')
 
-    total_evaluated_words = find_depression_words(text)
+    contiene, cantidad = find_depression_words(text)
 
-    return localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words
+    return localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad
 
-def male_female(audio_file_name):
-    # example: audio is located in D:\audios\audio1.wav
-    # so, p = audio1 ... don't add .wav
-    # c = D:\audios ... don't add last \
-    mysp=__import__("my-voice-analysis")
-    original_stdout = sys.stdout
-    gender_num = 4
-    p=audio_file_name # Audio File title without .wav
-    c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
+def male_female(audio_file_name = "mic9.wav"):
+    mysp=__import__("my-voice-analysis")                     
+    p="mic9" # Audio File title
+    c=r"C:\Users\DANIEL\Downloads\NEW_depressound-feature-calculation\NEW_depressound-feature-calculation\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
+    text = mysp.myspgend(p,c)
+    print('text ', text)
+    return text
 
-    with open('log.txt', 'w') as file:
-        sys.stdout = file
-        mysp.myspgend(p,c)
-        sys.stdout = original_stdout
-    with open('log.txt', 'r') as reader:
-        printed_text = reader.read()
-        str_file = printed_text.split()
-        if 'male' in str_file:
-            gender_num = 1
-        elif 'female' in str_file:
-            gender_num = 0
-        print(printed_text)    
-    return gender_num
-
-def retrieve_all_results(audio_file_name):
+def retrieve_all_results(audio_file_name = "mic9.wav"):
     # formulas
-    gender = male_female(audio_file_name)
-    localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = main_proccess(audio_file_name)
-    return gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words
+    results = male_female(audio_file_name)
+    localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad = main_proccess(audio_file_name = "mic9.wav")
+    return results, localabsoluteJitter, localdbShimmer, f1_mean, f2_mean, cantidad

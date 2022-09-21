@@ -14,6 +14,7 @@ def talk(text):
 
 
 def listen():
+    print("holi...")
     try:
         with sr.Microphone() as source:
             print("Escuchando...")

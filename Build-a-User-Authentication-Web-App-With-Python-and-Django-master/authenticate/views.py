@@ -1,6 +1,4 @@
-from asyncio.windows_events import NULL
 from http.client import HTTPResponse
-from .models import *
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
@@ -10,16 +8,9 @@ from scripts.parameters import main_proccess, retrieve_all_results
 from scripts.record_audio import run_mike
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
 from pynput.keyboard import Key, Controller
-from scripts.calculate import calculation
-import datetime
-
 # from scripts.parameters import run_mike
-date_str = datetime.datetime.now().timestamp()
-date_str = str(datetime.datetime.now().timestamp())
-date_str = date_str.split('.')
-date_str = date_str[0] + date_str[1]
-set_file_name = date_str
-r = recorder(set_file_name + ".wav")
+
+r = recorder("mic10.wav")
 l = listener(r)
 keyboard = Controller()
 
@@ -57,45 +48,9 @@ def register_user(request):
 		if form.is_valid():
 			form.save()
 			username = form.cleaned_data['username']
-			first_name = form.cleaned_data['first_name']
-			last_name = form.cleaned_data['last_name']
-			email = form.cleaned_data['email']
 			password = form.cleaned_data['password1']
 			user = authenticate(username=username, password=password)
 			login(request, user)
-			
-			paciente = Paciente.objects.create(
-				Paciente_Codigo = user.id,
-				Paciente_Nombre = first_name,
-				Paciente_Apellidos = last_name,
-				Paciente_Usuario = username,
-				Paciente_Edad = NULL,
-				Paciente_Departamento = NULL,
-				Paciente_Telefono = NULL,
-				Paciente_DNI = NULL,
-				Paciente_Correo = email,
-				Paciente_Contrasena = password,
-				Paciente_Rol = NULL,
-			)
-
-			formulario_titulo = ("formulario_"+username)
-			formulario_detalle = ("Formulario asignado al usuario: "+username)
-
-			formulario = Formulario.objects.create(
-				Formulario_Titulo = formulario_titulo,
-    			Formulario_FechaCreacion = datetime.datetime.now(),
-    			Formulario_Detalle = formulario_detalle
-			)
-
-			encuesta_detalle = ("Encuesta asignada al usuario: "+username)
-
-			encuesta = Encuesta.objects.create(
-    			Paciente_Paciente_Codigo = paciente,
-    			Formulario_Formulario_Codigo = formulario,
-    			Encuesta_FechaCompletado = datetime.datetime.now(),
-    			Encuesta_Detalle = encuesta_detalle
-			)
-
 			messages.success(request, ('You Have Registered...'))
 			return redirect('home_login')
 	else:
@@ -177,28 +132,18 @@ def record_with_keys(request):
 def record2(request):
 	print('q to start recording, t to stop it')
 	l.start()
-	l.recorder.start()
+	keyboard.press('q')
 	l.join()
+	# call to backend to retrieve last recorded audio
+	last_file_name = 'mic9.wav'
+	# insert into table of statistics
+	results = retrieve_all_results(last_file_name)
+	print('results ', results)
 	return redirect('estadisticas2')
+	# return render(request, 'authenticate/estadisticas2.html', context)
 
 def stop2(request):
 	keyboard.press('t')
-	print('user.id ', request.user.id)
-	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
-	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
-	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
-	print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean, ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
-	resulting_text, resulting_description = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
-	print('resulting_text ', resulting_text)
-	print('resulting_num ', resulting_description)
-		# call to backend to retrieve last recorded audio
-	# insert into table of statistics resulting_text, resulting_description
-
-	resultado = Resultado.objects.create(
-    			Encuesta_Encuesta_Codigo = encuesta,
-    			Resultado_Diagnostico = resulting_text,
-    			Resultado_Descripcion = resulting_description,
-    			Resultado_Recomendacion = NULL, 
-    			Resultado_Fecha = datetime.datetime.now()
-			)
-	return redirect('estadisticas2')
+	l.join()
+	context = {'form': 1, "process": "bri"}
+	return render(request, 'authenticate/results.html', context)
