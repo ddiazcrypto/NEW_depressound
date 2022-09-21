@@ -11,7 +11,7 @@
     <meta name="author" content="pixelstrap">
     <link rel="icon" href="{%  static 'assets/images/logo/favicon-icon.png'%}" type="image/x-icon">
     <link rel="shortcut icon" href="{%  static 'assets/images/logo/favicon-icon.png'%}" type="image/x-icon">
-    <title>Zeta admin dashboard </title>
+    <title>Depressound</title>
     <!-- Google font-->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
@@ -246,9 +246,9 @@
                   </svg>
                 </div>
                 <ul class="profile-dropdown onhover-show-div">
-                  <li><a href="user-profile.html"><i data-feather="user"></i><span>Account </span></a></li>
-                  <li><a href="email-application.html"><i data-feather="mail"></i><span>Inbox</span></a></li>
-                  <li><a href="kanban.html"><i data-feather="file-text"></i><span>Taskboard</span></a></li>
+                  <li><a href="{% url 'edit_profile' %}"><i data-feather="user"></i><span>Account </span></a></li>
+                  <li><a href="#"><i data-feather="mail"></i><span>Inbox</span></a></li>
+                  <li><a href="#"><i data-feather="file-text"></i><span>Taskboard</span></a></li>
                   <li><a href="{% url 'edit_profile' %}"><i data-feather="edit_profile"></i><span>Settings</span></a></li>
                   <li><a href="{% url 'logout' %}"><i data-feather="log-in"> </i><span>Logout</span></a></li>
                 </ul>
@@ -272,7 +272,7 @@
         <!-- Page Sidebar Start-->
         <div class="sidebar-wrapper"> 
           <div>
-            <div class="logo-wrapper logo-center"><a href="{% url 'home_login' %}"><img class="img-fluid for-light" src="{%  static 'assets/images/logo/small-logo.png'%}" alt=""><img class="img-fluid for-dark" src="{%  static 'assets/images/logo/small-white-logo.png'%}" alt=""></a>
+            <div class="logo-wrapper logo-center"><a href="{% url 'home_login' %}"><img class="img-fluid for-light" src="{%  static 'assets/images/logo/small-logo7.png'%}" alt=""><img class="img-fluid for-dark" src="{%  static 'assets/images/logo/small-white-logo.png'%}" alt=""></a>
               <div class="back-btn"><i class="fa fa-angle-left"></i></div>
             </div>
             <div class="logo-icon-wrapper"><a href="index.html"><img class="img-fluid" src="{%  static 'assets/images/logo-icon.png'%}" alt=""></a></div>
@@ -294,7 +294,7 @@
                         </g>
                       </svg><span class="lan-3">Dashboard              </span></a>
                     <ul class="sidebar-submenu">
-                      <li><a class="lan-4" href="{% url 'home_login' %}">Default</a></li>
+                      <li><a class="lan-4" href="{% url 'home_login' %}">Inicio</a></li>
                       <li><a class="lan-5" href="{% url 'estadisticas' %}">Estadisticas-1</a></li>
                     </ul>
                   </li>
@@ -323,7 +323,7 @@
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M2.45215 11.9688C2.45215 5.13075 4.8331 2.85205 11.976 2.85205C19.1188 2.85205 21.4998 5.13075 21.4998 11.9688C21.4998 18.8059 19.1188 21.0856 11.976 21.0856C4.8331 21.0856 2.45215 18.8059 2.45215 11.9688Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                           </g>
                         </g>
-                      </svg><span>Email</span></a>
+                      </svg><span>Historial</span></a>
                     <ul class="sidebar-submenu">
                       <li><a href="{% url 'historial' %}">Historial de reconocimiento</a></li>
                     </ul>
@@ -338,7 +338,7 @@
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M19.071 19.0698C16.0159 22.1264 11.4896 22.7867 7.78631 21.074C7.23961 20.8539 3.70113 21.8339 2.93334 21.067C2.16555 20.2991 3.14639 16.7601 2.92631 16.2134C1.21285 12.5106 1.87411 7.9826 4.9302 4.9271C8.83147 1.0243 15.1698 1.0243 19.071 4.9271C22.9803 8.83593 22.9723 15.1681 19.071 19.0698Z" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                           </g>
                         </g>
-                      </svg><span>Chat</span></a>
+                      </svg><span>Reconocimiento</span></a>
                     <ul class="sidebar-submenu">
                       <li><a href="{% url 'reconocimiento' %}">Reconocimiento 1</a></li>
                       <li><a href="{% url 'reconocimiento2' %}">Reconocimiento 2</a></li>
@@ -356,9 +356,9 @@
                             <path d="M5.00176 13.5444C3.24776 13.5444 1.74976 14.7334 1.74976 15.7954C1.74976 16.4204 2.26676 17.1014 3.05176 17.2854" stroke="#130F26" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                           </g>
                         </g>
-                      </svg><span>Users</span></a>
+                      </svg><span>Usuario</span></a>
                     <ul class="sidebar-submenu">
-                      <li><a href="{% url 'edit_profile' %}">Users Edit</a></li>
+                      <li><a href="{% url 'edit_profile' %}">Editar usuario</a></li>
                     </ul>
                   </li>
 
