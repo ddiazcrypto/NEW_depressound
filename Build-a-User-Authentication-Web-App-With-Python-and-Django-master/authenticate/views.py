@@ -175,20 +175,23 @@ def record_with_keys(request):
 	return render(request, 'authenticate/results.html', context)
 
 def record2(request):
-	
-	print(request.user.id)
-	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
-	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
 	print('q to start recording, t to stop it')
 	l.start()
-	keyboard.press('q')
+	l.recorder.start()
 	l.join()
-	# call to backend to retrieve last recorded audio
+	return redirect('estadisticas2')
+
+def stop2(request):
+	keyboard.press('t')
+	print('user.id ', request.user.id)
+	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
+	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
 	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
 	print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean, ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
 	resulting_text, resulting_description = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
 	print('resulting_text ', resulting_text)
 	print('resulting_num ', resulting_description)
+		# call to backend to retrieve last recorded audio
 	# insert into table of statistics resulting_text, resulting_description
 
 	resultado = Resultado.objects.create(
@@ -199,9 +202,3 @@ def record2(request):
     			Resultado_Fecha = datetime.datetime.now()
 			)
 	return redirect('estadisticas2')
-
-def stop2(request):
-	keyboard.press('t')
-	l.join()
-	context = {'form': 1, "process": "bri"}
-	return render(request, 'authenticate/results.html', context)

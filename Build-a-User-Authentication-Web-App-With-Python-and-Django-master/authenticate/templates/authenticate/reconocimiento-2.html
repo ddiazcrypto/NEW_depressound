@@ -61,7 +61,12 @@
                                     </ul>
                                   </div>
                                   <!-- <button class="btn btn-danger btn-block btn-lg">END CALL</button> -->
-                                  <div ><a class="btn btn-success btn-block btn-lg" href="{% url 'record' %}">Empezar a grabar</a>
+                                  <div>
+                                    <a class="btn btn-success btn-block btn-lg" href="{% url 'record' %}">Empezar a grabar</a>
+                                    <a class="btn btn-danger btn-block btn-lg" href="{% url 'stop' %}">Detener</a>
+                                  </div>
+                                  <div >
+                                    <div >
                                   <div class="receiver-img"><img src="{%  static 'assets/images/other-images/robot-echado2.png'%}" alt=""></div>
                                 </div>
                               </div>

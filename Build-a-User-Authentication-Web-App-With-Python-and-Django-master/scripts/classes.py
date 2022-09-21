@@ -61,8 +61,6 @@ class listener(keyboard.Listener):
         if key is None: #unknown event
             pass
         elif isinstance(key, keyboard.KeyCode): #alphanumeric key event
-            if key.char == 'q':
-                self.recorder.start()
             if key.char == 't': #press q to quit
                 self.recorder.stop()
                 return False #this is how you stop the listener thread   
