@@ -23,6 +23,7 @@ def evaluate_pc(pc):
         return 5
     elif pc > 25:
         return 10
+    return 0    
 
 def evaluate_p1(p1):
     if p1 <= 10:
@@ -31,6 +32,7 @@ def evaluate_p1(p1):
         return 5
     elif p1 > 20:
         return 10
+    return 0    
 
 def evaluate_p2(p2):
     if p2 <= 5:
@@ -39,12 +41,14 @@ def evaluate_p2(p2):
         return 1    
     elif p2 > 10:
         return 5
+    return 0    
 
 def evaluate_p12(p12):
     if p12 <= 30:
         return 5
     else:
-        return 0                          
+        return 0
+    return 0                              
 
 def find_depression_words(data):
     if data is None:
