@@ -8,16 +8,9 @@ from scripts.parameters import main_proccess, retrieve_all_results
 from scripts.record_audio import run_mike
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
 from pynput.keyboard import Key, Controller
-from scripts.calculate import calculation
-import datetime
-
 # from scripts.parameters import run_mike
-date_str = datetime.datetime.now().timestamp()
-date_str = str(datetime.datetime.now().timestamp())
-date_str = date_str.split('.')
-date_str = date_str[0] + date_str[1]
-set_file_name = date_str
-r = recorder(set_file_name + ".wav")
+
+r = recorder("mic10.wav")
 l = listener(r)
 keyboard = Controller()
 
@@ -142,13 +135,12 @@ def record2(request):
 	keyboard.press('q')
 	l.join()
 	# call to backend to retrieve last recorded audio
-	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
-	print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean, ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
-	resulting_text, resulting_description = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
-	print('resulting_text ', resulting_text)
-	print('resulting_num ', resulting_description)
-	# insert into table of statistics resulting_text, resulting_description
+	last_file_name = 'mic9.wav'
+	# insert into table of statistics
+	results = retrieve_all_results(last_file_name)
+	print('results ', results)
 	return redirect('estadisticas2')
+	# return render(request, 'authenticate/estadisticas2.html', context)
 
 def stop2(request):
 	keyboard.press('t')

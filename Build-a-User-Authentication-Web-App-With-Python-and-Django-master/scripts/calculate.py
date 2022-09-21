@@ -1,13 +1,9 @@
-def calculation(jitter, shimmer, f1, f2, hnr, gender,quantity_depression_words):
+def calculation(jitter, shimmer, f1, f2, hnr, gender):
     # gender 1 male, 2 female
-    calculated_result_parameters = 0
     if gender == 1:
-        calculated_result_parameters = calculate_male(jitter, shimmer, f1, f2, hnr)
+        return calculate_male(jitter, shimmer, f1, f2, hnr)
     else:
-        calculated_result_parameters =  calculate_female(jitter, shimmer, f1, f2, hnr)
-    final_result = (result_parameters(calculated_result_parameters)*2+result_words(quantity_depression_words))/2
-    diagnosis_text = final_diagnosis_text(round(final_result))
-    return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text)
+        return calculate_female(jitter, shimmer, f1, f2, hnr)
 
 def calculate_male(jitter, shimmer, f1, f2, hnr):
     total_sum = 0
@@ -22,6 +18,8 @@ def calculate_male(jitter, shimmer, f1, f2, hnr):
     if f2 >= 1511.5 and f2 <= 1604:
         total_sum += 1.5
     return total_sum    
+
+
 
 def calculate_female(jitter, shimmer, f1, f2, hnr):
     total_sum = 0
@@ -38,44 +36,14 @@ def calculate_female(jitter, shimmer, f1, f2, hnr):
     return total_sum
 
 
-def result_parameters(calculation):
+def result(calculation):
     if (calculation > 0 and calculation <= 1.5):
-        return 1
-    elif (calculation >= 2 and calculation <= 3.5):
-        return 2
-    elif (calculation >= 5 and calculation <= 7):
-        return 3
-    elif (calculation >= 7.5 and calculation <= 8.5):
-        return 4
-    elif (calculation > 8.5 and calculation <= 10):
-        return 5
-    return 0    
-
-def result_words(words_calculation):
-    if (words_calculation > 0 and words_calculation <= 17):
-        return 1
-    elif (words_calculation >= 18 and words_calculation <= 22):
-        return 2
-    elif (words_calculation >= 23 and words_calculation <= 25):
-        return 3
-    elif (words_calculation > 25 and words_calculation <= 27):
-        return 4
-    elif (words_calculation > 28 and words_calculation <= 30):
-        return 5
-    return 0    
-
-def final_diagnosis_text(scale):
-    if (scale == 1):
         return 'Sin depresión o Depresion minima'
-    elif (scale == 2):
+    elif (calculation >= 2 and calculation <= 3.5):
         return 'Depresion leve'
-    elif (scale == 3):
+    elif (calculation >= 5 and calculation <= 7):
         return 'Depresion moderada'
-    elif (scale == 4):
+    elif (calculation >= 7.5 and calculation <= 8.5):
         return 'Depresion moderadamente severa'
-    elif (scale == 5):
+    elif (calculation > 8.5 and calculation <= 10):
         return 'Depresion muy severa'
-    return 'No se puedo obtener análisis, vuelva a intentar'    
-
-def diagnosis(score_parameters, score_words, diagnosis):
-    return f'Se obtuvo un puntaje de {score_parameters} en la evaluación de este audio por parametros de voz. En cuanto a la evaluación por palabras dichas se obtuvo el puntaje de {score_words}. Lo cual da el siguiente diagnostico: {diagnosis}'
