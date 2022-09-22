@@ -86,6 +86,3 @@ def record():
     print('press q to start recording, press t to stop it')
     l.start() #keyboard listener is a thread so we start it here
     l.join() #wait for the tread to terminate so the program doesn't instantly close
-    
-
-# record()    

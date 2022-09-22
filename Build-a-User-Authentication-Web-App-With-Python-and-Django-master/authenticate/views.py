@@ -7,20 +7,12 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm, Password
 from django.contrib import messages 
 from .forms import SignUpForm, EditProfileForm
 from scripts.parameters import main_proccess, retrieve_all_results
-from scripts.record_audio import run_mike
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
 from pynput.keyboard import Key, Controller
 from scripts.calculate import calculation
 import datetime
 
 # from scripts.parameters import run_mike
-date_str = datetime.datetime.now().timestamp()
-date_str = str(datetime.datetime.now().timestamp())
-date_str = date_str.split('.')
-date_str = date_str[0] + date_str[1]
-set_file_name = date_str
-r = recorder(set_file_name + ".wav")
-l = listener(r)
 keyboard = Controller()
 
 def home(request):
@@ -175,15 +167,18 @@ def record_with_keys(request):
 	return render(request, 'authenticate/results.html', context)
 
 def record2(request):
+	date_str = datetime.datetime.now().timestamp()
+	date_str = str(datetime.datetime.now().timestamp())
+	date_str = date_str.split('.')
+	date_str = date_str[0] + date_str[1]
+	set_file_name = date_str
+	print('set file name ', set_file_name)
 	print('q to start recording, t to stop it')
+	r = recorder(set_file_name + ".wav")
+	l = listener(r)
 	l.start()
 	l.recorder.start()
 	l.join()
-	return redirect('estadisticas2')
-
-def stop2(request):
-	keyboard.press('t')
-	print('user.id ', request.user.id)
 	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
 	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
 	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
@@ -201,4 +196,8 @@ def stop2(request):
     			Resultado_Recomendacion = NULL, 
     			Resultado_Fecha = datetime.datetime.now()
 			)
+	return redirect('estadisticas2')
+
+def stop2(request):
+	keyboard.press('t')
 	return redirect('estadisticas2')
