@@ -9,7 +9,9 @@ import pandas as pd
 import parselmouth 
 import statistics
 from parselmouth.praat import call
+import os
 import sys
+from utils.constants import C_PATH
 mysp=__import__("my-voice-analysis")
 
 # Calculations
@@ -261,11 +263,10 @@ def male_female(audio_file_name):
     original_stdout = sys.stdout
     gender_num = 4
     p=audio_file_name # Audio File title without .wav
-    c=r"H:\Brigitte\8vo ciclo\Scripts\NEW_depressound\Build-a-User-Authentication-Web-App-With-Python-and-Django-master" # Path to the Audio_File directory (Python 3.7)
 
     with open('log.txt', 'w') as file:
         sys.stdout = file
-        mysp.myspgend(p,c)
+        mysp.myspgend(p,C_PATH)
         sys.stdout = original_stdout
     with open('log.txt', 'r') as reader:
         printed_text = reader.read()

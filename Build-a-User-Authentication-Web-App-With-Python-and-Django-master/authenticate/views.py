@@ -11,6 +11,8 @@ from scripts.classes import record, start_recording, stop_recording, recorder, l
 from pynput.keyboard import Key, Controller
 from scripts.calculate import calculation
 import datetime
+from utils.constants import C_PATH
+import os
 
 # from scripts.parameters import run_mike
 keyboard = Controller()
@@ -188,7 +190,6 @@ def record2(request):
 	print('resulting_num ', resulting_description)
 		# call to backend to retrieve last recorded audio
 	# insert into table of statistics resulting_text, resulting_description
-
 	resultado = Resultado.objects.create(
     			Encuesta_Encuesta_Codigo = encuesta,
     			Resultado_Diagnostico = resulting_text,
@@ -196,6 +197,10 @@ def record2(request):
     			Resultado_Recomendacion = NULL, 
     			Resultado_Fecha = datetime.datetime.now()
 			)
+	path1 = os.path.join(C_PATH, set_file_name+'.wav')
+	path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
+	os.remove(path1)
+	os.remove(path2)		
 	return redirect('estadisticas2')
 
 def stop2(request):
