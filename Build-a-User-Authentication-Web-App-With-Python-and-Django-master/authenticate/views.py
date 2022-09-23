@@ -138,7 +138,11 @@ def estadisticas(request):
 
 def estadisticas2(request):
 	# call to backend with the results
-	return render(request, 'authenticate/estadisticas2.html', {})
+	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
+	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
+	resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo = encuesta)
+	numero_resultados = len(list(resultados))
+	return render(request, 'authenticate/estadisticas2.html', {"resultados":resultados, "numero_resultados":numero_resultados})
 
 def historial(request):
 	return render(request, 'authenticate/historial.html', {}) 
