@@ -7,7 +7,7 @@ def calculation(jitter, shimmer, f1, f2, hnr, gender,quantity_depression_words):
         calculated_result_parameters =  calculate_female(jitter, shimmer, f1, f2, hnr)
     final_result = (result_parameters(calculated_result_parameters)*2+result_words(quantity_depression_words))/2
     diagnosis_text = final_diagnosis_text(round(final_result))
-    return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text)
+    return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text), calculated_result_parameters, quantity_depression_words
 
 def calculate_male(jitter, shimmer, f1, f2, hnr):
     total_sum = 0
