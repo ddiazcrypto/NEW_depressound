@@ -176,72 +176,18 @@ def measureFormants(sound, wave_file, f0min,f0max):
     return f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median
 
 def main_proccess(audio_file_name):
-# create lists to put the results
-    file_list = []
-    duration_list = []
-    mean_F0_list = []
-    sd_F0_list = []
-    hnr_list = []
-    localJitter_list = []
-    localabsoluteJitter_list = []
-    rapJitter_list = []
-    ppq5Jitter_list = []
-    ddpJitter_list = []
-    localShimmer_list = []
-    localdbShimmer_list = []
-    apq3Shimmer_list = []
-    aqpq5Shimmer_list = []
-    apq11Shimmer_list = []
-    ddaShimmer_list = []
-    f1_mean_list = []
-    f2_mean_list = []
-    f3_mean_list = []
-    f4_mean_list = []
-    f1_median_list = []
-    f2_median_list = []
-    f3_median_list = []
-    f4_median_list = []
-
     wave2_file = glob.glob(audio_file_name+'.wav')
 
     sound = parselmouth.Sound(wave2_file[0])
 
-# local shimmer, local jitter, f1_mean, f2_mean, hnr
+    # local shimmer, local jitter, f1_mean, f2_mean, hnr
     (duration, meanF0, stdevF0, hnr, localJitter, localabsoluteJitter, rapJitter, ppq5Jitter, ddpJitter, 
     localShimmer, localdbShimmer, apq3Shimmer, aqpq5Shimmer, apq11Shimmer, ddaShimmer) = measurePitch(
         sound, 75, 300, "Hertz")
 
     (f1_mean, f2_mean, f3_mean, f4_mean, f1_median, f2_median, f3_median, f4_median) = measureFormants(
         sound, wave2_file[0], 75, 300)
-
-    file_list.append(wave2_file[0]) # make an ID list
-    duration_list.append(duration) # make duration list
-    mean_F0_list.append(meanF0) # make a mean F0 list
-    sd_F0_list.append(stdevF0) # make a sd F0 list
-    hnr_list.append(hnr) #add HNR data
-        
-        # add raw jitter and shimmer measures
-    localJitter_list.append(localJitter)
-    localabsoluteJitter_list.append(localabsoluteJitter)
-    rapJitter_list.append(rapJitter)
-    ppq5Jitter_list.append(ppq5Jitter)
-    ddpJitter_list.append(ddpJitter)
-    localShimmer_list.append(localShimmer)
-    localdbShimmer_list.append(localdbShimmer)
-    apq3Shimmer_list.append(apq3Shimmer)
-    aqpq5Shimmer_list.append(aqpq5Shimmer)
-    apq11Shimmer_list.append(apq11Shimmer)
-    ddaShimmer_list.append(ddaShimmer)
-        
-        # add the formant data
-    f1_mean_list.append(f1_mean)
-    f2_mean_list.append(f2_mean)
-    f3_mean_list.append(f3_mean)
-    f4_mean_list.append(f4_mean)
-    f1_median_list.append(f1_median)
-    f2_median_list.append(f2_median)
-    f3_median_list.append(f3_median)
-    f4_median_list.append(f4_median)
+                
     r = sr.Recognizer()
 
     with sr.AudioFile(audio_file_name+'.wav') as source:
