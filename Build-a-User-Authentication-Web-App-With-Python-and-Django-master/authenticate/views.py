@@ -134,7 +134,7 @@ def estadisticas2(request):
 	# call to backend with the results
 	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
 	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
-	resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo = encuesta)
+	resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo = encuesta).order_by('-Resultado_Fecha')
 	numero_resultados = len(list(resultados))
 	return render(request, 'authenticate/estadisticas2.html', {"resultados":resultados, "numero_resultados":numero_resultados})
 
