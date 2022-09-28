@@ -5,9 +5,13 @@ def calculation(jitter, shimmer, f1, f2, hnr, gender,quantity_depression_words):
         calculated_result_parameters = calculate_male(jitter, shimmer, f1, f2, hnr)
     else:
         calculated_result_parameters =  calculate_female(jitter, shimmer, f1, f2, hnr)
-    final_result = (result_parameters(calculated_result_parameters)*2+result_words(quantity_depression_words))/2
+    result_parameters_var = result_parameters(calculated_result_parameters)
+    result_words_var = result_words(quantity_depression_words)
+    final_result = (result_parameters_var*2+result_words_var)/2
     diagnosis_text = final_diagnosis_text(round(final_result))
-    return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text), calculated_result_parameters, quantity_depression_words
+    result_parameters_var_diagnosis = final_diagnosis_text(round(result_parameters_var))
+    result_words_var_diagnosis = final_diagnosis_text(round(result_words_var))
+    return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text, result_parameters_var_diagnosis, result_words_var_diagnosis), calculated_result_parameters, quantity_depression_words
 
 def calculate_male(jitter, shimmer, f1, f2, hnr):
     total_sum = 0
@@ -77,5 +81,5 @@ def final_diagnosis_text(scale):
         return 'Depresion muy severa'
     return 'No se puedo obtener análisis, vuelva a intentar'    
 
-def diagnosis(score_parameters, score_words, diagnosis):
-    return f'Se obtuvo un puntaje de {score_parameters} en la evaluación de este audio por parametros de voz. En cuanto a la evaluación por palabras dichas se obtuvo el puntaje de {score_words}. Lo cual da el siguiente diagnostico: {diagnosis}'
+def diagnosis(score_parameters, score_words, diagnosis, result_parameters_var_diagnosis, result_words_var_diagnosis):
+    return f'Se obtuvo un puntaje de {score_parameters} en la evaluación de este audio por parametros de voz, lo cual significa que en esta etapa el paciente tiene el siguiente diagnostico: {result_parameters_var_diagnosis}. En cuanto a la evaluación por palabras dichas se obtuvo el puntaje de {score_words}, lo cual se traduce a que en esta etapa el paciente tiene el siguiente resultado: {result_words_var_diagnosis}, haciendo un analisis de ambos, resulta el siguiente diagnostico final: {diagnosis}'
