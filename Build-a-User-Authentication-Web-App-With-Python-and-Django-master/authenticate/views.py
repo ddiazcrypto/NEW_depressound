@@ -217,10 +217,11 @@ def record2(request):
         set_file_name)
     print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean,
           ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
-    resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words = calculation(
+    resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result = calculation(
         localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
     print('resulting_text ', resulting_text)
     print('resulting_num ', resulting_description)
+    print('retrieved data ', resulting_text, 'desc ', resulting_description, 'numbers ', calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result)
     # call to backend to retrieve last recorded audio
     # insert into table of statistics resulting_text, resulting_description
     resultado = Resultado.objects.create(
@@ -228,6 +229,11 @@ def record2(request):
         Resultado_Diagnostico=resulting_text,
         Resultado_Descripcion=resulting_description,
         Resultado_Recomendacion=NULL,
+		Resultado_por_parametros = calculated_result_parameters,
+		Resultado_por_palabras_depresivas = quantity_depression_words,
+		Resultado_escala_total = scale_final_result,
+		Resultado_escala_por_parametros = scale_by_parameters,
+		Resultado_escala_por_palabras_depresivas = scale_by_words_said,
         Resultado_Fecha=datetime.datetime.now()
     )
     path1 = os.path.join(C_PATH, set_file_name+'.wav')
@@ -267,7 +273,8 @@ class ChartData(APIView):
         muy_severa = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
 
-        default_items = [minimo, leve, moderada, moderadamente_severa, muy_severa]
+        default_items = [minimo, leve, moderada,
+                         moderadamente_severa, muy_severa]
 
         data = {
             "labels": labels,
