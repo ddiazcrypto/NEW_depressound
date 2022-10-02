@@ -12,6 +12,8 @@ from pynput.keyboard import Key, Controller
 from scripts.calculate import calculation
 import datetime
 from utils.constants import C_PATH
+from rest_framework.views import APIView
+from rest_framework.response import Response
 import os
 
 # from scripts.parameters import run_mike
@@ -172,6 +174,9 @@ def record_with_keys(request):
 	context = {'form': 1, "process": "bri"}
 	return render(request, 'authenticate/results.html', context)
 
+def get_charts(request):
+	return render(request, 'authenticate/charts.html')	
+
 def record2(request):
 	date_str = datetime.datetime.now().timestamp()
 	date_str = str(datetime.datetime.now().timestamp())
@@ -210,3 +215,16 @@ def record2(request):
 def stop2(request):
 	keyboard.press('t')
 	return redirect('estadisticas2')
+
+class ChartData(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def get(self, request, format=None):
+        labels = ["Mínima", "Leve", "Moderada", "Moderadamente severa", "Muy severa"]
+        default_items = [3, 23, 2, 3, 12]
+        data = {
+                "labels": labels,
+                "default": default_items,
+        }
+        return Response(data)

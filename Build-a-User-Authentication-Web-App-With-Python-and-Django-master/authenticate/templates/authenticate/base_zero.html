@@ -486,6 +486,11 @@
     <script src="{%  static 'assets/js/clipboard/clipboard.min.js'%}"></script>
     <script src="{%  static 'assets/js/custom-card/custom-card.js'%}"></script>
     <script src="{%  static 'assets/js/chart-widget.js'%}"></script>
+    <script>
+      $(document).ready(function(){
+        {% block jquery %}{% endblock %}
+      })
+      </script>
     <!-- Plugins JS Ends-->
 
 
