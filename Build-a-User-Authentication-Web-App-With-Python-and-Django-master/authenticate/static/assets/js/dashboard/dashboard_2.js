@@ -194,13 +194,29 @@ new Chartist.Bar('.sales-small-2', {
 
 // invoice-overviwe-chart start
 var options = {
-  series: [{
-    name: 'Parametros de voz',   
-    data: [19, 28, 31, 25, 35, 18, 23]
-  }, {
-    name: 'Palabras dichas',   
-    data: [25, 31, 35, 29, 39, 22, 28]
-  }],
+  series: [
+  {
+    name: 'Sin depresión o Depresion minima',   
+    data: [19]
+  }, 
+  {
+    name: 'Depresion leve',   
+    data: [25]
+  },
+  {
+    name: 'Depresion moderada',   
+    data: [20]
+  },
+  {
+    name: 'Depresion moderadamente severa',   
+    data: [30]
+  },
+  {
+    name: 'Depresion muy severa',
+    data: [15]
+  },
+
+],
   chart: {
     type: 'bar',
     height: 263,
@@ -221,7 +237,7 @@ var options = {
   legend: {
     show: false,
   },
-  colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary],
+  colors: [zetaAdminConfig.primary, zetaAdminConfig.secondary, zetaAdminConfig.success, zetaAdminConfig.warning, zetaAdminConfig.danger],
   stroke: {
     show: true,
     width: 1,
@@ -236,7 +252,7 @@ var options = {
       }           
     },
   xaxis: {
-    categories: [ 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    categories: [ 'Oct'],
     labels: {
       offsetX:  0,
       offsetY: -6,
@@ -263,11 +279,11 @@ var options = {
     tooltip: {
       enabled: true
     },
-    labels: {
+/*     labels: {
       formatter: function (value) {
         return value + "k";
       },
-    },
+    }, */
   },
   fill: {
     opacity: 1
@@ -275,7 +291,7 @@ var options = {
   tooltip: {
     y: {
       formatter: function (val) {
-        return "$ " + val + " thousands"
+        return "Puntaje:  " + val
       }
     }
   },
