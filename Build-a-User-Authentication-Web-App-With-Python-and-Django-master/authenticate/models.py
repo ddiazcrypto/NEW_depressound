@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 
 # Create your models here.
@@ -34,6 +35,8 @@ class Resultado(models.Model):
     Resultado_Diagnostico = models.CharField(max_length=80)
     Resultado_Descripcion = models.CharField(max_length=1000)
     Resultado_Recomendacion = models.CharField(max_length=140)
+    Resultado_por_parametros = models.FloatField(default=0)
+    Resultado_por_palabras_depresivas = models.FloatField(default=0)
     Resultado_Fecha = models.DateField()
 
 class Tipo_Pregunta(models.Model):

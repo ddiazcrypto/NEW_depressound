@@ -198,6 +198,7 @@ def record2(request):
     			Encuesta_Encuesta_Codigo = encuesta,
     			Resultado_Diagnostico = resulting_text,
     			Resultado_Descripcion = resulting_description,
+
     			Resultado_Recomendacion = NULL, 
     			Resultado_Fecha = datetime.datetime.now()
 			)
