@@ -4,7 +4,7 @@ from .models import *
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
-from django.contrib import messages 
+from django.contrib import messages
 from .forms import SignUpForm, EditProfileForm
 from scripts.parameters import main_proccess, retrieve_all_results
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
@@ -19,212 +19,286 @@ import os
 # from scripts.parameters import run_mike
 keyboard = Controller()
 
+
 def home(request):
-	return render(request, 'authenticate/home.html', {})
+    return render(request, 'authenticate/home.html', {})
 
 
 def home_login(request):
-	return render(request, 'authenticate/home_login.html', {})
+    return render(request, 'authenticate/home_login.html', {})
+
 
 def login_user(request):
-	if request.method == 'POST':
-		username = request.POST['username']
-		password = request.POST['password']
-		user = authenticate(request, username=username, password=password)
-		if user is not None:
-			login(request, user)
-			messages.success(request, ('You Have Been Logged In!'))
-			return redirect('home_login')
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, ('You Have Been Logged In!'))
+            return redirect('home_login')
 
-		else:
-			messages.success(request, ('Error Logging In - Please Try Again...'))
-			return redirect('login')
-	else:
-		return render(request, 'authenticate/login.html', {})
+        else:
+            messages.success(
+                request, ('Error Logging In - Please Try Again...'))
+            return redirect('login')
+    else:
+        return render(request, 'authenticate/login.html', {})
+
 
 def logout_user(request):
-	logout(request)
-	messages.success(request, ('You Have Been Logged Out...'))
-	return redirect('home')
+    logout(request)
+    messages.success(request, ('You Have Been Logged Out...'))
+    return redirect('home')
+
 
 def register_user(request):
-	if request.method == 'POST':
-		form = SignUpForm(request.POST)
-		if form.is_valid():
-			form.save()
-			username = form.cleaned_data['username']
-			first_name = form.cleaned_data['first_name']
-			last_name = form.cleaned_data['last_name']
-			email = form.cleaned_data['email']
-			password = form.cleaned_data['password1']
-			user = authenticate(username=username, password=password)
-			login(request, user)
-			
-			paciente = Paciente.objects.create(
-				Paciente_Codigo = user.id,
-				Paciente_Nombre = first_name,
-				Paciente_Apellidos = last_name,
-				Paciente_Usuario = username,
-				Paciente_Edad = NULL,
-				Paciente_Departamento = NULL,
-				Paciente_Telefono = NULL,
-				Paciente_DNI = NULL,
-				Paciente_Correo = email,
-				Paciente_Contrasena = password,
-				Paciente_Rol = NULL,
-			)
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
 
-			formulario_titulo = ("formulario_"+username)
-			formulario_detalle = ("Formulario asignado al usuario: "+username)
+            paciente = Paciente.objects.create(
+                Paciente_Codigo=user.id,
+                Paciente_Nombre=first_name,
+                Paciente_Apellidos=last_name,
+                Paciente_Usuario=username,
+                Paciente_Edad=NULL,
+                Paciente_Departamento=NULL,
+                Paciente_Telefono=NULL,
+                Paciente_DNI=NULL,
+                Paciente_Correo=email,
+                Paciente_Contrasena=password,
+                Paciente_Rol=NULL,
+            )
 
-			formulario = Formulario.objects.create(
-				Formulario_Titulo = formulario_titulo,
-    			Formulario_FechaCreacion = datetime.datetime.now(),
-    			Formulario_Detalle = formulario_detalle
-			)
+            formulario_titulo = ("formulario_"+username)
+            formulario_detalle = ("Formulario asignado al usuario: "+username)
 
-			encuesta_detalle = ("Encuesta asignada al usuario: "+username)
+            formulario = Formulario.objects.create(
+                Formulario_Titulo=formulario_titulo,
+                Formulario_FechaCreacion=datetime.datetime.now(),
+                Formulario_Detalle=formulario_detalle
+            )
 
-			encuesta = Encuesta.objects.create(
-    			Paciente_Paciente_Codigo = paciente,
-    			Formulario_Formulario_Codigo = formulario,
-    			Encuesta_FechaCompletado = datetime.datetime.now(),
-    			Encuesta_Detalle = encuesta_detalle
-			)
+            encuesta_detalle = ("Encuesta asignada al usuario: "+username)
 
-			messages.success(request, ('You Have Registered...'))
-			return redirect('home_login')
-	else:
-		form = SignUpForm()
-	
-	context = {'form': form}
-	return render(request, 'authenticate/register.html', context)
+            encuesta = Encuesta.objects.create(
+                Paciente_Paciente_Codigo=paciente,
+                Formulario_Formulario_Codigo=formulario,
+                Encuesta_FechaCompletado=datetime.datetime.now(),
+                Encuesta_Detalle=encuesta_detalle
+            )
 
+            messages.success(request, ('You Have Registered...'))
+            return redirect('home_login')
+    else:
+        form = SignUpForm()
+
+    context = {'form': form}
+    return render(request, 'authenticate/register.html', context)
 
 
 def edit_profile(request):
-	if request.method == 'POST':
-		form = EditProfileForm(request.POST, instance=request.user)
-		if form.is_valid():
-			form.save()
-			messages.success(request, ('You Have Edited Your Profile...'))
-			return redirect('home_login')
-	else:
-		form = EditProfileForm(instance=request.user)
-	
-	context = {'form': form}
-	return render(request, 'authenticate/edit_profile.html', context)
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('You Have Edited Your Profile...'))
+            return redirect('home_login')
+    else:
+        form = EditProfileForm(instance=request.user)
+
+    context = {'form': form}
+    return render(request, 'authenticate/edit_profile.html', context)
+
 
 def change_password(request):
-	if request.method == 'POST':
-		form = PasswordChangeForm(data=request.POST, user=request.user)
-		if form.is_valid():
-			form.save()
-			update_session_auth_hash(request, form.user)
-			messages.success(request, ('You Have Edited Your Password...'))
-			return redirect('home_login')
-	else:
-		form = PasswordChangeForm(user=request.user)
-	
-	context = {'form': form}
-	return render(request, 'authenticate/change_password.html', context)
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            messages.success(request, ('You Have Edited Your Password...'))
+            return redirect('home_login')
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    context = {'form': form}
+    return render(request, 'authenticate/change_password.html', context)
+
 
 def estadisticas(request):
-	return render(request, 'authenticate/estadisticas.html', {})
+    return render(request, 'authenticate/estadisticas.html', {})
+
 
 def estadisticas2(request):
-	# call to backend with the results
-	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
-	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
-	resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo = encuesta).order_by('-Resultado_Fecha')
-	numero_resultados = len(list(resultados))
-	return render(request, 'authenticate/estadisticas2.html', {"resultados":resultados, "numero_resultados":numero_resultados})
+    # call to backend with the results
+    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
+    encuesta = Encuesta.objects.get(
+        Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
+    resultados = Resultado.objects.filter(
+        Encuesta_Encuesta_Codigo=encuesta).order_by('-Resultado_Fecha')
+    numero_resultados = len(list(resultados))
+    return render(request, 'authenticate/estadisticas2.html', {"resultados": resultados, "numero_resultados": numero_resultados})
+
 
 def historial(request):
-	return render(request, 'authenticate/historial.html', {}) 
+    return render(request, 'authenticate/historial.html', {})
+
 
 def reconocimiento(request):
-	return render(request, 'authenticate/reconocimiento-1.html', {})
+    return render(request, 'authenticate/reconocimiento-1.html', {})
+
 
 def reconocimiento2(request):
-	return render(request, 'authenticate/reconocimiento-2.html', {})
+    return render(request, 'authenticate/reconocimiento-2.html', {})
+
 
 def pendientes(request):
-	return render(request, 'authenticate/pendientes.html', {})
+    return render(request, 'authenticate/pendientes.html', {})
+
 
 def recomendaciones(request):
-	return render(request, 'authenticate/recomendaciones.html', {})
+    return render(request, 'authenticate/recomendaciones.html', {})
+
 
 def get_voice_parameters(request):
-	context = {'form': 1, "process": main_proccess()}
-	return render(request, 'authenticate/results.html', context)
+    context = {'form': 1, "process": main_proccess()}
+    return render(request, 'authenticate/results.html', context)
+
 
 def record_audio(request):
-	start_recording()
-	context = {'form': 1, "process": "bri"}
-	return render(request, 'authenticate/results.html', context)
+    start_recording()
+    context = {'form': 1, "process": "bri"}
+    return render(request, 'authenticate/results.html', context)
+
 
 def stop_audio(request):
-	stop_recording()
-	context = {'form': 1, "process": "bri"}
-	return render(request, 'authenticate/results.html', context)
+    stop_recording()
+    context = {'form': 1, "process": "bri"}
+    return render(request, 'authenticate/results.html', context)
+
 
 def record_with_keys(request):
-	record()
-	context = {'form': 1, "process": "bri"}
-	return render(request, 'authenticate/results.html', context)
+    record()
+    context = {'form': 1, "process": "bri"}
+    return render(request, 'authenticate/results.html', context)
+
 
 def get_charts(request):
-	return render(request, 'authenticate/charts.html')	
+    return render(request, 'authenticate/charts.html')
+
 
 def record2(request):
-	date_str = datetime.datetime.now().timestamp()
-	date_str = str(datetime.datetime.now().timestamp())
-	date_str = date_str.split('.')
-	date_str = date_str[0] + date_str[1]
-	set_file_name = date_str
-	print('set file name ', set_file_name)
-	print('q to start recording, t to stop it')
-	r = recorder(set_file_name + ".wav")
-	l = listener(r)
-	l.start()
-	l.recorder.start()
-	l.join()
-	paciente = Paciente.objects.get(Paciente_Codigo = request.user.id)
-	encuesta = Encuesta.objects.get(Paciente_Paciente_Codigo = paciente.Paciente_Codigo)
-	gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(set_file_name)
-	print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean, ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
-	resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words = calculation(localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
-	print('resulting_text ', resulting_text)
-	print('resulting_num ', resulting_description)
-		# call to backend to retrieve last recorded audio
-	# insert into table of statistics resulting_text, resulting_description
-	resultado = Resultado.objects.create(
-    			Encuesta_Encuesta_Codigo = encuesta,
-    			Resultado_Diagnostico = resulting_text,
-    			Resultado_Descripcion = resulting_description,
-    			Resultado_Recomendacion = NULL, 
-    			Resultado_Fecha = datetime.datetime.now()
-			)
-	path1 = os.path.join(C_PATH, set_file_name+'.wav')
-	path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
-	os.remove(path1)
-	os.remove(path2)		
-	return redirect('estadisticas2')
+    date_str = datetime.datetime.now().timestamp()
+    date_str = str(datetime.datetime.now().timestamp())
+    date_str = date_str.split('.')
+    date_str = date_str[0] + date_str[1]
+    set_file_name = date_str
+    print('set file name ', set_file_name)
+    print('q to start recording, t to stop it')
+    r = recorder(set_file_name + ".wav")
+    l = listener(r)
+    l.start()
+    l.recorder.start()
+    l.join()
+    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
+    encuesta = Encuesta.objects.get(
+        Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
+    gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(
+        set_file_name)
+    print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean,
+          ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
+    resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words = calculation(
+        localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
+    print('resulting_text ', resulting_text)
+    print('resulting_num ', resulting_description)
+    # call to backend to retrieve last recorded audio
+    # insert into table of statistics resulting_text, resulting_description
+    resultado = Resultado.objects.create(
+        Encuesta_Encuesta_Codigo=encuesta,
+        Resultado_Diagnostico=resulting_text,
+        Resultado_Descripcion=resulting_description,
+        Resultado_Recomendacion=NULL,
+        Resultado_Fecha=datetime.datetime.now()
+    )
+    path1 = os.path.join(C_PATH, set_file_name+'.wav')
+    path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
+    os.remove(path1)
+    os.remove(path2)
+    return redirect('estadisticas2')
+
 
 def stop2(request):
-	keyboard.press('t')
-	return redirect('estadisticas2')
+    keyboard.press('t')
+    return redirect('estadisticas2')
+
 
 class ChartData(APIView):
     authentication_classes = []
     permission_classes = []
 
     def get(self, request, format=None):
-        labels = ["Mínima", "Leve", "Moderada", "Moderadamente severa", "Muy severa"]
-        default_items = [3, 23, 2, 3, 12]
+        labels = ["Mínima", "Leve", "Moderada",
+                  "Moderadamente severa", "Muy severa"]
+        today = datetime.datetime.now()
+        print('request ', request)
+        user_id = self.request.query_params.get('userId')
+        print('user_id django ', user_id)
+        paciente = Paciente.objects.get(Paciente_Codigo=user_id)
+        encuesta = Encuesta.objects.get(
+            Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
+        minimo = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+        leve = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=2, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+        moderada = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=3, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+        moderadamente_severa = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+        muy_severa = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+
+        default_items = [minimo, leve, moderada, moderadamente_severa, muy_severa]
+
         data = {
-                "labels": labels,
-                "default": default_items,
+            "labels": labels,
+            "default": default_items,
         }
         return Response(data)
+
+
+def get_data_for_chart():
+    labels = ["Mínima", "Leve", "Moderada",
+              "Moderadamente severa", "Muy severa"]
+    today = datetime.datetime.now()
+    # paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
+    # encuesta = Encuesta.objects.get(
+    #     Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
+    # minimo = Resultado.objects.filter(
+    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
+    # leve = Resultado.objects.filter(
+    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=2, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
+    # moderada = Resultado.objects.filter(
+    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=3, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
+    # moderadamente_severa = Resultado.objects.filter(
+    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
+    # muy_severa = Resultado.objects.filter(
+    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
+
+    # default_items = [minimo if minimo > 0 else 2 , leve if leve > 0 else 2, moderada if moderada > 0 else 2, moderadamente_severa if moderadamente_severa > 0 else 2, muy_severa if muy_severa > 0 else 2]
+    default_items = [2, 2, 2, 2, 2]
+
+    data = {
+        "labels": labels,
+        "default": default_items,
+    }
+    return Response(data)
