@@ -195,10 +195,10 @@ new Chartist.Bar('.sales-small-2', {
 // invoice-overviwe-chart start
 var options = {
   series: [{
-    name: 'Revenue',   
+    name: 'Parametros de voz',   
     data: [19, 28, 31, 25, 35, 18, 23]
   }, {
-    name: 'Free Cash Flow',   
+    name: 'Palabras dichas',   
     data: [25, 31, 35, 29, 39, 22, 28]
   }],
   chart: {
