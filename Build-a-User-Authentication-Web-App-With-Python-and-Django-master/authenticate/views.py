@@ -204,8 +204,8 @@ def record2(request):
 			)
 	path1 = os.path.join(C_PATH, set_file_name+'.wav')
 	path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
-	# os.remove(path1)
-	# os.remove(path2)		
+	os.remove(path1)
+	os.remove(path2)		
 	return redirect('estadisticas2')
 
 def stop2(request):
