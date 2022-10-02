@@ -1,85 +1,84 @@
 {% extends 'authenticate/base_zero.html' %}
 {% load static %}
 {% block content %}
-          <div class="container-fluid">
-            <div class="page-title">
-              <div class="row">
-                <div class="col-12 col-sm-6">
-                  <h3>
-                     Ecommerce</h3>
+<div class="container-fluid">
+  <div class="page-title">
+    <div class="row">
+      <div class="col-12 col-sm-6">
+        <h3>
+          Ecommerce</h3>
+      </div>
+      <div class="col-12 col-sm-6">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
+          <li class="breadcrumb-item">Dashboard</li>
+          <li class="breadcrumb-item active">Ecommerce</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Container-fluid starts-->
+<div class="container-fluid ecommerce-dash">
+  <div class="row">
+    <div class="col-xl-3 col-md-6 dash-xl-33 dash-lg-50">
+      <div class="card sales-state">
+        <div class="row m-0">
+          <div class="col-12 p-0">
+            <div class="card bg-primary">
+              <div class="card-header card-no-border bg-primary">
+                <div class="media media-dashboard">
+                  <div class="media-body">
+                    <h5 class="mb-0 text-light">Sales Stats</h5>
+                  </div>
+                  <div class="icon-box"><i data-feather="more-horizontal"></i></div>
                 </div>
-                <div class="col-12 col-sm-6">
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a class="home-item" href="index.html"><i data-feather="home"></i></a></li>
-                    <li class="breadcrumb-item">Dashboard</li>
-                    <li class="breadcrumb-item active">Ecommerce</li>
-                  </ol>
-                </div>
+              </div>
+              <div class="card-body p-0">
+                <div id="sales-state-chart"></div>
               </div>
             </div>
           </div>
-          <!-- Container-fluid starts-->
-          <div class="container-fluid ecommerce-dash">
-            <div class="row">
-              <div class="col-xl-3 col-md-6 dash-xl-33 dash-lg-50">
-                <div class="card sales-state">
-                  <div class="row m-0">
-                    <div class="col-12 p-0"> 
-                      <div class="card bg-primary">
-                        <div class="card-header card-no-border bg-primary"> 
-                          <div class="media media-dashboard">
-                            <div class="media-body"> 
-                              <h5 class="mb-0 text-light">Sales Stats</h5>
-                            </div>
-                            <div class="icon-box"><i data-feather="more-horizontal"></i></div>
-                          </div>
-                        </div>
-                        <div class="card-body p-0">
-                          <div id="sales-state-chart"></div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-4 p-0">
-                      <div class="sales-small-chart">
-                        <div class="card-body p-0 m-auto">
-                          <div class="sales-small sales-small-1"></div>
-                          <h6>300</h6><span>Watch Sale  </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-4 p-0">
-                      <div class="sales-small-chart">
-                        <div class="card-body p-0 m-auto">
-                          <div class="sales-small sales-small-2"></div>
-                          <h6>1120</h6><span>Phone Sale</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-4 p-0">
-                      <div class="sales-small-chart">
-                        <div class="card-body p-0 m-auto">
-                          <div class="sales-small sales-small-3"></div>
-                          <h6>530</h6><span>Tablet Sale </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div class="col-4 p-0">
+            <div class="sales-small-chart">
+              <div class="card-body p-0 m-auto">
+                <div class="sales-small sales-small-1"></div>
+                <h6>300</h6><span>Watch Sale </span>
               </div>
-              <div class="col-xl-5 col-md-6 dash-xl-33 dash-lg-50">
-                <div class="card pb-0 invoice-overviwe">                
-                  <div class="card-header card-no-border">
-                    <div class="header-top">
-                      <h5 class="m-0">Escalas de depresión durante el mes</h5>
-                      
-                    </div>
-                  </div>
-                  <div class="card-body pt-0">
-                    <div id="invoice-overviwe-chart"></div>
-                  </div>
-                </div>
+            </div>
+          </div>
+          <div class="col-4 p-0">
+            <div class="sales-small-chart">
+              <div class="card-body p-0 m-auto">
+                <div class="sales-small sales-small-2"></div>
+                <h6>1120</h6><span>Phone Sale</span>
               </div>
-<!--               <div class="col-xl-4 col-md-6 dash-xl-50 dash-29">
+            </div>
+          </div>
+          <div class="col-4 p-0">
+            <div class="sales-small-chart">
+              <div class="card-body p-0 m-auto">
+                <div class="sales-small sales-small-3"></div>
+                <h6>530</h6><span>Tablet Sale </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-5 col-md-6 dash-xl-33 dash-lg-50">
+      <div class="card pb-0 invoice-overviwe">
+        <div class="card-header card-no-border">
+          <div class="header-top">
+            <h5 class="m-0">Escalas de depresión durante el mes</h5>
+          </div>
+        </div>
+        <div class="card-body pt-0">
+          <canvas id="myChart3"></canvas>
+        </div>
+      </div>
+    </div>
+    <!--               <div class="col-xl-4 col-md-6 dash-xl-50 dash-29">
                 <div class="card bg-primary get-support">
                   <div class="card-body">
                     <div class="support-sec-img"><img class="img-fluid" src="{%  static 'assets/images/dashboard-2/robotatencion.png'%}" alt=""></div>
@@ -90,7 +89,7 @@
                   </div>
                 </div>
               </div> -->
-<!--               <div class="col-xl-5 col-md-12 dash-xl-50 dash-lg-100 dash-39">
+    <!--               <div class="col-xl-5 col-md-12 dash-xl-50 dash-lg-100 dash-39">
                 <div class="card ongoing-project recent-orders">
                   <div class="card-header card-no-border">
                     <div class="media media-dashboard">
@@ -223,7 +222,8 @@
                   </div>
                 </div>
               </div>
- -->          <!-- <div class="col-xl-4 col-md-6 dash-xl-50 dash-29">
+ -->
+    <!-- <div class="col-xl-4 col-md-6 dash-xl-50 dash-29">
                 <div class="card our-activities">
                   <div class="card-header card-no-border">
                     <div class="media media-dashboard">
@@ -300,35 +300,120 @@
                   </div>
                 </div>
               </div> -->
-              <div class="col-xl-3 col-md-6 dash-xl-50 dash-32">
-                <div class="card revenue-category">
-                  <div class="card-header card-no-border">
-                    <div class="media">
-                      <div class="media-body"> 
-                        <h5 class="mb-0">Revenue by Category</h5>
-                      </div>
-                      <div class="icon-box onhover-dropdown"><i data-feather="more-horizontal"></i>
-                        <div class="icon-box-show onhover-show-div">
-                          <ul> 
-                            <li> <a>
-                                 Done</a></li>
-                            <li> <a>
-                                 Pending</a></li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="donut-inner">
-                      <h5>16,349</h5>
-                      <h6>2,174 in pending</h6>
-                    </div>
-                    <div id="revenue-chart">            </div>
-                  </div>
-                </div>
+    <div class="col-xl-3 col-md-6 dash-xl-50 dash-32">
+      <div class="card revenue-category">
+        <div class="card-header card-no-border">
+          <div class="media">
+            <div class="media-body">
+              <h5 class="mb-0">Revenue by Category</h5>
+            </div>
+            <div class="icon-box onhover-dropdown"><i data-feather="more-horizontal"></i>
+              <div class="icon-box-show onhover-show-div">
+                <ul>
+                  <li> <a>
+                      Done</a></li>
+                  <li> <a>
+                      Pending</a></li>
+                </ul>
               </div>
             </div>
           </div>
-          <!-- Container-fluid Ends-->
+        </div>
+        <div class="card-body">
+          <div class="donut-inner">
+            <h5>16,349</h5>
+            <h6>2,174 in pending</h6>
+          </div>
+          <div id="revenue-chart"> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Container-fluid Ends-->
 {% endblock %}
+
+<script>
+  {% block jquery %}
+  var endpoint = '/api/chart/data/'
+  var defaultData = []
+  var labels = [];
+  $.ajax({
+    method: "GET",
+    url: endpoint,
+    success: function (data) {
+      labels = data.labels
+      defaultData = data.default
+      setChart()
+    },
+    error: function (error_data) {
+      console.log("error")
+      console.log(error_data)
+    }
+  })
+
+  function setChart() {
+    var ctx2 = document.getElementById("myChart3");
+    var myChart = new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: defaultData,
+          backgroundColor: [zetaAdminConfig.primary, zetaAdminConfig.secondary, zetaAdminConfig.success, zetaAdminConfig.warning, zetaAdminConfig.danger],
+          borderColor: [zetaAdminConfig.primary, zetaAdminConfig.secondary, zetaAdminConfig.success, zetaAdminConfig.warning, zetaAdminConfig.danger],
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        },
+        legend: {
+          display: false
+        }
+      }
+    });
+
+    var myChart = new Chart(ctx, {
+      type: 'polarArea',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: '# of Votes',
+          data: defaultData,
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+  }
+  {% endblock %}
+</script>
