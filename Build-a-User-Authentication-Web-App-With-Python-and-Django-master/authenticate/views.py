@@ -272,6 +272,8 @@ class ChartData(APIView):
             Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
         muy_severa = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+        total = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
 
         default_items = [minimo, leve, moderada,
                          moderadamente_severa, muy_severa]
@@ -279,6 +281,7 @@ class ChartData(APIView):
         data = {
             "labels": labels,
             "default": default_items,
+            "total": total,
         }
         return Response(data)
 
