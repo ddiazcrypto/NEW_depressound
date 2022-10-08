@@ -136,6 +136,10 @@ def change_password(request):
 
 
 def estadisticas(request):
+    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
+    encuesta = Encuesta.objects.get(
+        Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
+    resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo=encuesta)
     return render(request, 'authenticate/estadisticas.html', {})
 
 
