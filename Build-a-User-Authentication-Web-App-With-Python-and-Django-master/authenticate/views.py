@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from django.contrib import messages
+from django.db.models import Avg
 from .forms import SignUpForm, EditProfileForm
 from scripts.parameters import main_proccess, retrieve_all_results
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
@@ -140,7 +141,16 @@ def estadisticas(request):
     encuesta = Encuesta.objects.get(
         Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
     resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo=encuesta)
-    return render(request, 'authenticate/estadisticas.html', {})
+    promedio_parametros = resultados.aggregate(Avg('Resultado_por_parametros'))
+    promedio_parametros = round(list(promedio_parametros.values())[0], 2)
+    promedio_palabras = resultados.aggregate(Avg('Resultado_por_palabras_depresivas'))
+    promedio_palabras = round(list(promedio_palabras.values())[0], 2)
+    promedio_total = resultados.aggregate(Avg('Resultado_escala_total'))
+    promedio_total = int(list(promedio_total.values())[0])
+    return render(request, 'authenticate/estadisticas.html', 
+    {"promedio_parametros": promedio_parametros,
+    "promedio_palabras": promedio_palabras,
+    "promedio_total": promedio_total})
 
 
 def estadisticas2(request):

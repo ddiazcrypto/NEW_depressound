@@ -53,13 +53,6 @@
                                   <div class="total-time">
                                     <h2 class="digits">00 : 00</h2>
                                   </div>
-                                  <div class="call-icons">
-                                    <ul class="list-inline">
-                                      <li class="list-inline-item"><a href="javascript:void(0)"><i class="icon-video-camera"></i></a></li>
-                                      <li class="list-inline-item"><a href="javascript:void(0)"><i class="icon-volume"></i></a></li>
-                                      <li class="list-inline-item"><a href="javascript:void(0)"><i class="icon-user"></i></a></li>
-                                    </ul>
-                                  </div>
                                   <!-- <button class="btn btn-danger btn-block btn-lg">END CALL</button> -->
                                   <div ><a class="btn btn-success btn-block btn-lg" href="{% url 'record' %}">Empezar a grabar</a>
                                     <a class="btn btn-danger btn-block btn-lg" href="{% url 'stop' %}">Detener</a>
@@ -219,3 +212,9 @@
             </div>
           </div>
 {% endblock %}
+
+<script>
+  {% block jquery %}
+
+  {% endblock %}
+</script>
