@@ -267,9 +267,11 @@ class ChartData(APIView):
     permission_classes = []
 
     def get(self, request, format=None):
+        today = datetime.datetime.now()
+        start_date = datetime.date(today.year, today.month, 1)
+        end_date = datetime.date(today.year, today.month, 31)
         labels = ["Mínima", "Leve", "Moderada",
                   "Moderadamente severa", "Muy severa"]
-        today = datetime.datetime.now()
         print('request ', request)
         user_id = self.request.query_params.get('userId')
         print('user_id django ', user_id)
@@ -277,17 +279,17 @@ class ChartData(APIView):
         encuesta = Encuesta.objects.get(
             Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
         minimo = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
         leve = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=2, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=2, Resultado_Fecha__range=(start_date, end_date)).count()
         moderada = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=3, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=3, Resultado_Fecha__range=(start_date, end_date)).count()
         moderadamente_severa = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__range=(start_date, end_date)).count()
         muy_severa = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__range=(start_date, end_date)).count()
         total = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month).count()
+            Encuesta_Encuesta_Codigo=encuesta, Resultado_Fecha__range=(start_date, end_date)).count()
 
         default_items = [minimo, leve, moderada,
                          moderadamente_severa, muy_severa]
@@ -298,31 +300,3 @@ class ChartData(APIView):
             "total": total,
         }
         return Response(data)
-
-
-def get_data_for_chart():
-    labels = ["Mínima", "Leve", "Moderada",
-              "Moderadamente severa", "Muy severa"]
-    today = datetime.datetime.now()
-    # paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
-    # encuesta = Encuesta.objects.get(
-    #     Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
-    # minimo = Resultado.objects.filter(
-    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
-    # leve = Resultado.objects.filter(
-    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=2, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
-    # moderada = Resultado.objects.filter(
-    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=3, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
-    # moderadamente_severa = Resultado.objects.filter(
-    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
-    # muy_severa = Resultado.objects.filter(
-    #     Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__year=today.year, Resultado_Fecha__month=today.month)
-
-    # default_items = [minimo if minimo > 0 else 2 , leve if leve > 0 else 2, moderada if moderada > 0 else 2, moderadamente_severa if moderadamente_severa > 0 else 2, muy_severa if muy_severa > 0 else 2]
-    default_items = [2, 2, 2, 2, 2]
-
-    data = {
-        "labels": labels,
-        "default": default_items,
-    }
-    return Response(data)
