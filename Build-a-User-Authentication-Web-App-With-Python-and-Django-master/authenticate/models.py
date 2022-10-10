@@ -19,14 +19,14 @@ class Paciente(models.Model):
 class Formulario(models.Model):
     Formulario_Codigo = models.AutoField(primary_key=True)
     Formulario_Titulo = models.CharField(max_length=40)
-    Formulario_FechaCreacion = models.DateField()
+    Formulario_FechaCreacion = models.DateTimeField()
     Formulario_Detalle = models.CharField(max_length=100)
 
 class Encuesta(models.Model):
     Encuesta_Codigo = models.AutoField(primary_key=True)
     Paciente_Paciente_Codigo = models.ForeignKey(Paciente, on_delete=models.CASCADE)
     Formulario_Formulario_Codigo = models.ForeignKey(Formulario, on_delete=models.CASCADE)
-    Encuesta_FechaCompletado = models.DateField()
+    Encuesta_FechaCompletado = models.DateTimeField()
     Encuesta_Detalle = models.CharField(max_length=100)
 
 class Resultado(models.Model):
@@ -40,7 +40,7 @@ class Resultado(models.Model):
     Resultado_escala_total = models.IntegerField(default = 0)
     Resultado_escala_por_parametros  = models.IntegerField(default = 0)
     Resultado_escala_por_palabras_depresivas  = models.IntegerField(default = 0)
-    Resultado_Fecha = models.DateField()
+    Resultado_Fecha = models.DateTimeField()
 
 class Tipo_Pregunta(models.Model):
     TipoPregunta_Codigo = models.AutoField(primary_key=True)
