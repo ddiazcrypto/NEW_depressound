@@ -272,9 +272,7 @@ class ChartData(APIView):
         end_date = datetime.date(today.year, today.month, 31)
         labels = ["Mínima", "Leve", "Moderada",
                   "Moderadamente severa", "Muy severa"]
-        print('request ', request)
         user_id = self.request.query_params.get('userId')
-        print('user_id django ', user_id)
         paciente = Paciente.objects.get(Paciente_Codigo=user_id)
         encuesta = Encuesta.objects.get(
             Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
@@ -290,6 +288,16 @@ class ChartData(APIView):
             Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__range=(start_date, end_date)).count()
         total = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta, Resultado_Fecha__range=(start_date, end_date)).count()
+        resultados_escala_total = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta).values_list('Resultado_escala_total', flat=True)
+        
+        resultados_escala_total = list(resultados_escala_total)
+
+        fechas_de_todos_los_resultados = Resultado.objects.filter(
+            Encuesta_Encuesta_Codigo=encuesta)
+        fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.extra(select={'datestr':"strftime( '%%Y-%%m-%%d %%H:%%M', Resultado_Fecha)"})
+        fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.values_list('datestr', flat=True)
+        fechas_de_todos_los_resultados = list(fechas_de_todos_los_resultados)
 
         default_items = [minimo, leve, moderada,
                          moderadamente_severa, muy_severa]
@@ -298,5 +306,7 @@ class ChartData(APIView):
             "labels": labels,
             "default": default_items,
             "total": total,
+            "fechas": fechas_de_todos_los_resultados,
+            "resultados_totales": resultados_escala_total,
         }
         return Response(data)

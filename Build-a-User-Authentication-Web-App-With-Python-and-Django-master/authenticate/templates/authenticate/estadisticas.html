@@ -38,7 +38,7 @@
                 </div>
               </div>
               <div class="card-body">
-                <h1 class="mb-0 position-absolute top-50 start-50 translate-middle">{{promedio_total}}</h1><br/>
+                <h1 class="mb-0 position-absolute top-50 start-50 translate-middle">{{promedio_total}}</h1><br />
                 <h4 class="top-50">en escala de 5 puntos</h4>
               </div>
             </div>
@@ -92,6 +92,18 @@
         </div>
       </div>
     </div>
+    <div class="col-xl-12 col-md-12 dash-xl-33 dash-lg-50">
+      <div class="card pb-0 invoice-overviwe">
+        <div class="card-header card-no-border">
+          <div class="header-top">
+            <h5 class="m-0">Tu avance</h5>
+          </div>
+        </div>
+        <div class="card-body pt-0">
+          <canvas id="myChart6"></canvas>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Container-fluid Ends-->
@@ -103,9 +115,10 @@
   var defaultData = []
   var labels = [];
   var total = 0;
+  var fechas = []
+  var resultados_totales = []
   var userIdOut = "{{user.id}}"
   userIdOut = parseInt(userIdOut)
-  console.log('userId ', userIdOut)
   $.ajax({
     method: "GET",
     url: endpoint,
@@ -114,6 +127,8 @@
       labels = data.labels
       defaultData = data.default
       total = data.total
+      fechas = data.fechas
+      resultados_totales = data.resultados_totales
       setChart()
     },
     error: function (error_data) {
@@ -123,6 +138,11 @@
   })
 
   function setChart() {
+
+    var ctx2 = document.getElementById("myChart3");
+    var ctx3 = document.getElementById("myChart4");
+    var ctx4 = document.getElementById("myChart6")
+
     Chart.pluginService.register({
       beforeDraw: function (chart) {
         if (chart.config.options.elements.center) {
@@ -207,7 +227,7 @@
       }
     });
 
-    const config1 = {
+    const configDoughnut = {
       type: 'doughnut',
       data: {
         labels: labels,
@@ -237,10 +257,7 @@
       }
     }
 
-    // Bar Chart
-    var ctx2 = document.getElementById("myChart3");
-    var ctx3 = document.getElementById("myChart4");
-    var myChart = new Chart(ctx2, {
+    const configBar = {
       type: 'bar',
       data: {
         labels: labels,
@@ -262,12 +279,40 @@
           display: false
         }
       }
-    });
+    }
 
-    var myChart = new Chart(ctx3, config1);
-    // Pie chart
+    const labelsLine = fechas;
+    const dataLines = {
+      labels: labelsLine,
+      datasets: [{
+        label: 'Escalas de depresión',
+        data: resultados_totales,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+      }]
+    };
+    const configLine = {
+      type: 'line',
+      data: dataLines,
+      options: {
+        responsive: true,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+      }
+    };
 
-    // Statistics chart
+    // Doughnut Chart
+    var myChart = new Chart(ctx3, configDoughnut);
+
+    // Bar Chart
+    var myChart = new Chart(ctx2, configBar);
+
+    // Line chart
+    var myChart = new Chart(ctx4, configLine);
+
+
   }
   {% endblock %}
 </script>
