@@ -43,11 +43,11 @@ def calculate_female(jitter, shimmer, f1, f2, hnr):
 
 
 def result_parameters(calculation):
-    if (calculation > 0 and calculation <= 1.5):
+    if (calculation >= 0 and calculation <= 1.5):
         return 1
     elif (calculation >= 2 and calculation <= 3.5):
         return 2
-    elif (calculation >= 5 and calculation <= 7):
+    elif (calculation >= 4.5 and calculation <= 7):
         return 3
     elif (calculation >= 7.5 and calculation <= 8.5):
         return 4
