@@ -313,21 +313,33 @@
             }
           }]
         },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                let label = context.dataset.label || '';
-
-                if (label) {
-                  label += ': ';
-                }
-                if (context.parsed.y !== null) {
-                  label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
-                }
-                return label;
+        tooltips: {
+          callbacks: {
+            label: function (tooltipItem, data) {
+              console.log('tooltipItem ', tooltipItem)
+              let num = parseInt(tooltipItem['value'])
+              let text = ''
+              switch (num) {
+                case 1:
+                  text = 'Sin depresión o Depresion minima'
+                  break;
+                case 2:
+                  text = 'Depresion leve'
+                  break;
+                case 3:
+                  text = 'Depresion moderada'
+                  break;
+                case 4:
+                  text = 'Depresion moderadamente severa'
+                  break;
+                case 5:
+                  text = 'Depresion muy severa'
+                  break;
+                default:
+                  text = 'error'
               }
-            }
+              return text;
+            },
           }
         }
       }
