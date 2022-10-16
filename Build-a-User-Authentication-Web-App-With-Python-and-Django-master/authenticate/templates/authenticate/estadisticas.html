@@ -19,7 +19,7 @@
   </div>
 </div>
 <!-- Container-fluid starts-->
-<div class="mb-4 d-flex justify-content-end" style="margin-right: 2rem">
+<div class="mb-4 d-flex justify-content-end" style="margin-right: 1rem">
   <a class="btn btn-success btn-block" href="{% url 'estadisticas2' %}"><i data-feather="home"></i>Ir a tus
     resultados</a>
 </div>
@@ -34,7 +34,7 @@
                 <div class="media media-dashboard">
                   <div class="media-body">
                     <h5 class="mb-0 text-light">Tus diagnósticos en promedio dan como resultado:</h5>
-                    
+
                   </div>
                 </div>
               </div>
@@ -43,7 +43,7 @@
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-3 col-md-6 dash-xl-50 dash-32">
+    <div class="col-xl-3 col-md-6 dash-xl-33 dash-32">
       <div class="card revenue-category">
         <div class="card-header card-no-border">
           <div class="media">
@@ -77,7 +77,7 @@
         </div>
       </div>
     </div>
-    <div class="col-xl-12 col-md-12 dash-xl-33 dash-lg-50">
+    <div class="col-xl-12 col-md-12 dash-xl-100 dash-lg-50">
       <div class="card pb-0 invoice-overviwe">
         <div class="card-header card-no-border">
           <div class="header-top">
@@ -123,6 +123,14 @@
   })
 
   function setChart() {
+
+    var yLabels = {
+      1: 'Sin depresión o mínima',
+      2: 'Depresión leve',
+      3: 'Depresión moderada',
+      4: 'Moderadamente severa',
+      5: 'Muy severa',
+    }
 
     var ctx2 = document.getElementById("myChart3");
     var ctx3 = document.getElementById("myChart4");
@@ -285,13 +293,42 @@
           mode: 'index',
           intersect: false,
         },
+        legend: {
+          display: false
+        },
         scales: {
-            y: {
-                display: false // Hide Y axis labels
-            },
-            x: {
-                display: false // Hide X axis labels
+          yAxes: [{
+            ticks: {
+              min: 1,
+              max: 5,
+              stepSize: 1,
+              callback: function (value, index, values) {
+                return yLabels[value];
+              }
             }
+          }],
+          xAxes: [{
+            ticks: {
+              display: false //this will remove only the label
+            }
+          }]
+        },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let label = context.dataset.label || '';
+
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(context.parsed.y);
+                }
+                return label;
+              }
+            }
+          }
         }
       }
     };
@@ -304,6 +341,7 @@
 
     // Line chart
     var myChart = new Chart(ctx4, configLine);
+
 
 
   }
