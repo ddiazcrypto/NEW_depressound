@@ -147,10 +147,25 @@ def estadisticas(request):
     promedio_palabras = round(list(promedio_palabras.values())[0], 2)
     promedio_total = resultados.aggregate(Avg('Resultado_escala_total'))
     promedio_total = int(list(promedio_total.values())[0])
+
+    promedio_descripcion = ''
+
+    if (promedio_total <= 1):
+        promedio_descripcion = 'Sin depresión o Depresion minima'
+    elif (promedio_total <= 2):
+        promedio_descripcion = 'Depresion leve'
+    elif (promedio_total <= 3):
+        promedio_descripcion = 'Depresion moderada'
+    elif (promedio_total <= 4):
+        promedio_descripcion = 'Depresion moderadamente severa'
+    else:
+        promedio_descripcion = 'Depresion muy severa'
+
     return render(request, 'authenticate/estadisticas.html', 
     {"promedio_parametros": promedio_parametros,
     "promedio_palabras": promedio_palabras,
-    "promedio_total": promedio_total})
+    "promedio_total": promedio_total,
+    "promedio_descripcion": promedio_descripcion})
 
 
 def estadisticas2(request):
