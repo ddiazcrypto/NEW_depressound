@@ -80,24 +80,6 @@ def register_user(request):
                 Paciente_Rol=NULL,
             )
 
-            formulario_titulo = ("formulario_"+username)
-            formulario_detalle = ("Formulario asignado al usuario: "+username)
-
-            formulario = Formulario.objects.create(
-                Formulario_Titulo=formulario_titulo,
-                Formulario_FechaCreacion=datetime.datetime.now(),
-                Formulario_Detalle=formulario_detalle
-            )
-
-            encuesta_detalle = ("Encuesta asignada al usuario: "+username)
-
-            encuesta = Encuesta.objects.create(
-                Paciente_Paciente_Codigo=paciente,
-                Formulario_Formulario_Codigo=formulario,
-                Encuesta_FechaCompletado=datetime.datetime.now(),
-                Encuesta_Detalle=encuesta_detalle
-            )
-
             messages.success(request, ('You Have Registered...'))
             return redirect('home_login')
     else:
@@ -188,6 +170,26 @@ def reconocimiento(request):
 
 
 def reconocimiento2(request):
+    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
+
+    formulario_titulo = ("formulario_"+ paciente.Paciente_Usuario)
+    formulario_detalle = ("Formulario asignado al usuario: "+paciente.Paciente_Usuario)
+
+    formulario = Formulario.objects.create(
+        Formulario_Titulo=formulario_titulo,
+        Formulario_FechaCreacion=datetime.datetime.now(),
+        Formulario_Detalle=formulario_detalle
+    )
+
+    encuesta_detalle = ("Encuesta asignada al usuario: "+paciente.Paciente_Usuario)
+
+    encuesta = Encuesta.objects.create(
+        Paciente_Paciente_Codigo=paciente,
+        Formulario_Formulario_Codigo=formulario,
+        Encuesta_FechaCompletado=datetime.datetime.now(),
+        Encuesta_Detalle=encuesta_detalle
+    )
+
     return render(request, 'authenticate/reconocimiento-2.html', {})
 
 
