@@ -5,7 +5,6 @@ from .models import *
 
 admin.site.register(Paciente)
 admin.site.register(Formulario)
-admin.site.register(Encuesta)
 admin.site.register(Resultado)
 admin.site.register(Tipo_Pregunta)
 admin.site.register(Pregunta)

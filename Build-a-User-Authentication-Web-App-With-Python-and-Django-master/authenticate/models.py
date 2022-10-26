@@ -15,23 +15,8 @@ class Paciente(models.Model):
     Paciente_Correo = models.CharField(max_length=40, default='')
     Paciente_Contrasena = models.CharField(max_length=40, default='')
     Paciente_Rol = models.CharField(max_length=40, default='')
-
-class Formulario(models.Model):
-    Formulario_Codigo = models.AutoField(primary_key=True)
-    Formulario_Titulo = models.CharField(max_length=40)
-    Formulario_FechaCreacion = models.DateTimeField()
-    Formulario_Detalle = models.CharField(max_length=100)
-
-class Encuesta(models.Model):
-    Encuesta_Codigo = models.AutoField(primary_key=True)
-    Paciente_Paciente_Codigo = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    Formulario_Formulario_Codigo = models.ForeignKey(Formulario, on_delete=models.CASCADE)
-    Encuesta_FechaCompletado = models.DateTimeField()
-    Encuesta_Detalle = models.CharField(max_length=100)
-
 class Resultado(models.Model):
     Resultado_Codigo = models.AutoField(primary_key=True)
-    Encuesta_Encuesta_Codigo = models.ForeignKey(Encuesta, on_delete=models.CASCADE)
     Resultado_Diagnostico = models.CharField(max_length=80)
     Resultado_Descripcion = models.CharField(max_length=1000)
     Resultado_Recomendacion = models.CharField(max_length=140)
@@ -41,7 +26,13 @@ class Resultado(models.Model):
     Resultado_escala_por_parametros  = models.IntegerField(default = 0)
     Resultado_escala_por_palabras_depresivas  = models.IntegerField(default = 0)
     Resultado_Fecha = models.DateTimeField()
-
+class Formulario(models.Model):
+    Formulario_Codigo = models.AutoField(primary_key=True)
+    Formulario_Titulo = models.CharField(max_length=40)
+    Formulario_FechaCreacion = models.DateTimeField()
+    Formulario_Detalle = models.CharField(max_length=100)
+    Paciente_Paciente_Codigo = models.ForeignKey(Paciente, on_delete=models.CASCADE)
+    Resultado_Resultado_Codigo = models.ForeignKey(Resultado, on_delete=models.CASCADE)
 class Tipo_Pregunta(models.Model):
     TipoPregunta_Codigo = models.AutoField(primary_key=True)
     TipoPregunta_Descripcion = models.CharField(max_length=40)
@@ -53,7 +44,8 @@ class Pregunta(models.Model):
     Tipo_Pregunta_TipoPregunta_Codigo = models.ForeignKey(Tipo_Pregunta, on_delete=models.CASCADE)
     
 
-class Encuesta_X_Pregunta(models.Model):
-    EncuestaPregunta_Codigo = models.AutoField(primary_key=True)
+class Formulario_X_Pregunta(models.Model):
+    FormularioPregunta_Codigo = models.AutoField(primary_key=True)
     Formulario_Formulario_Codigo = models.ForeignKey(Formulario, on_delete=models.CASCADE)
     Pregunta_Pregunta_Codigo = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
+    Resultado_Resultado_Codigo = models.ForeignKey(Resultado, on_delete=models.CASCADE)

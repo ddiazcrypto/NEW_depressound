@@ -89,15 +89,6 @@ def register_user(request):
                 Formulario_Detalle=formulario_detalle
             )
 
-            encuesta_detalle = ("Encuesta asignada al usuario: "+username)
-
-            encuesta = Encuesta.objects.create(
-                Paciente_Paciente_Codigo=paciente,
-                Formulario_Formulario_Codigo=formulario,
-                Encuesta_FechaCompletado=datetime.datetime.now(),
-                Encuesta_Detalle=encuesta_detalle
-            )
-
             messages.success(request, ('You Have Registered...'))
             return redirect('home_login')
     else:
@@ -289,8 +280,7 @@ class ChartData(APIView):
                   "Moderadamente severa", "Muy severa"]
         user_id = self.request.query_params.get('userId')
         paciente = Paciente.objects.get(Paciente_Codigo=user_id)
-        encuesta = Encuesta.objects.get(
-            Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
+        encuesta = Formulario_X_Pregunta.objects.all().select_related('Formulario_Codigo').select_related('Pregunta_Codigo')
         minimo = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
         leve = Resultado.objects.filter(
