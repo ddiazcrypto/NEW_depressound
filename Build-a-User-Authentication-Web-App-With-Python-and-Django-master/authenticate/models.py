@@ -32,7 +32,7 @@ class Formulario(models.Model):
     Formulario_FechaCreacion = models.DateTimeField()
     Formulario_Detalle = models.CharField(max_length=100)
     Paciente_Paciente_Codigo = models.ForeignKey(Paciente, on_delete=models.CASCADE)
-    Resultado_Resultado_Codigo = models.ForeignKey(Resultado, on_delete=models.CASCADE)
+    Resultado_Resultado_Codigo = models.ForeignKey(Resultado, on_delete=models.CASCADE,blank=True, null=True)
 class Tipo_Pregunta(models.Model):
     TipoPregunta_Codigo = models.AutoField(primary_key=True)
     TipoPregunta_Descripcion = models.CharField(max_length=40)
