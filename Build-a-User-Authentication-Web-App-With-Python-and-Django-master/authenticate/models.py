@@ -1,5 +1,6 @@
 from email.policy import default
 from django.db import models
+import datetime
 
 # Create your models here.
 
@@ -48,4 +49,7 @@ class Formulario_X_Pregunta(models.Model):
     FormularioPregunta_Codigo = models.AutoField(primary_key=True)
     Formulario_Formulario_Codigo = models.ForeignKey(Formulario, on_delete=models.CASCADE)
     Pregunta_Pregunta_Codigo = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
-    Resultado_Resultado_Codigo = models.ForeignKey(Resultado, on_delete=models.CASCADE)
+    Resultado_Resultado_Codigo = models.ForeignKey(Resultado, on_delete=models.CASCADE, default=None, blank=True, null=True)
+    Formulario_X_Pregunta_FechaCreacion = models.DateTimeField(default=datetime.datetime.now())
+    Formulario_X_Pregunta_FechaActualizacion = models.DateTimeField(default=None, blank=True, null=True)
+

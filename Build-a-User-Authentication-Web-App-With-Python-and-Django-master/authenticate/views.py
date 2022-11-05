@@ -21,6 +21,10 @@ import os
 
 # from scripts.parameters import run_mike
 keyboard = Controller()
+pregunta1g = ''
+pregunta2g = ''
+pregunta3g = ''
+formulariog = ''
 
 
 def home(request):
@@ -127,7 +131,8 @@ def estadisticas(request):
     resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo=encuesta)
     promedio_parametros = resultados.aggregate(Avg('Resultado_por_parametros'))
     promedio_parametros = round(list(promedio_parametros.values())[0], 2)
-    promedio_palabras = resultados.aggregate(Avg('Resultado_por_palabras_depresivas'))
+    promedio_palabras = resultados.aggregate(
+        Avg('Resultado_por_palabras_depresivas'))
     promedio_palabras = round(list(promedio_palabras.values())[0], 2)
     promedio_total = resultados.aggregate(Avg('Resultado_escala_total'))
     promedio_total = int(list(promedio_total.values())[0])
@@ -145,11 +150,11 @@ def estadisticas(request):
     else:
         promedio_descripcion = 'Depresion muy severa'
 
-    return render(request, 'authenticate/estadisticas.html', 
-    {"promedio_parametros": promedio_parametros,
-    "promedio_palabras": promedio_palabras,
-    "promedio_total": promedio_total,
-    "promedio_descripcion": promedio_descripcion})
+    return render(request, 'authenticate/estadisticas.html',
+                  {"promedio_parametros": promedio_parametros,
+                   "promedio_palabras": promedio_palabras,
+                   "promedio_total": promedio_total,
+                   "promedio_descripcion": promedio_descripcion})
 
 
 def estadisticas2(request):
@@ -170,45 +175,49 @@ def historial(request):
 def reconocimiento(request):
     paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
     formulario_titulo = ("formulario_"+paciente.Paciente_Usuario)
-    formulario_detalle = ("Formulario asignado al usuario: "+paciente.Paciente_Usuario)
+    formulario_detalle = (
+        "Formulario asignado al usuario: "+paciente.Paciente_Usuario)
 
     resultado = Resultado.objects.create(
-        Resultado_Fecha = datetime.datetime.now(),
+        Resultado_Fecha=datetime.datetime.now(),
     )
 
-    formulario = Formulario.objects.create(
+    formulariog = Formulario.objects.create(
         Formulario_Titulo=formulario_titulo,
         Formulario_FechaCreacion=datetime.datetime.now(),
         Formulario_Detalle=formulario_detalle,
-        Paciente_Paciente_Codigo = paciente,
-        Resultado_Resultado_Codigo = resultado
+        Paciente_Paciente_Codigo=paciente,
+        Resultado_Resultado_Codigo=resultado
     )
 
-    pregunta1 = Pregunta.objects.filter(Pregunta_Nivel = 1).order_by('?')[0]
-    pregunta2 = Pregunta.objects.filter(Pregunta_Nivel = 2).order_by('?')[0]
-    pregunta3 = Pregunta.objects.filter(Pregunta_Nivel = 3).order_by('?')[0]
+    pregunta1g = Pregunta.objects.filter(Pregunta_Nivel=1).order_by('?')[0]
+    pregunta2g = Pregunta.objects.filter(Pregunta_Nivel=2).order_by('?')[0]
+    pregunta3g = Pregunta.objects.filter(Pregunta_Nivel=3).order_by('?')[0]
 
     Formulario_X_Pregunta.objects.create(
-        Formulario_Formulario_Codigo = formulario,
-        Pregunta_Pregunta_Codigo = pregunta1,
-        Resultado_Resultado_Codigo = resultado
+        Formulario_Formulario_Codigo=formulariog,
+        Pregunta_Pregunta_Codigo=pregunta1g,
+        Resultado_Resultado_Codigo=resultado,
+        Formulario_X_Pregunta_FechaCreacion=datetime.datetime.now()
     )
     Formulario_X_Pregunta.objects.create(
-        Formulario_Formulario_Codigo = formulario,
-        Pregunta_Pregunta_Codigo = pregunta2,
-        Resultado_Resultado_Codigo = resultado
+        Formulario_Formulario_Codigo=formulariog,
+        Pregunta_Pregunta_Codigo=pregunta2g,
+        Resultado_Resultado_Codigo=resultado,
+        Formulario_X_Pregunta_FechaCreacion=datetime.datetime.now()
     )
     Formulario_X_Pregunta.objects.create(
-        Formulario_Formulario_Codigo = formulario,
-        Pregunta_Pregunta_Codigo = pregunta3,
-        Resultado_Resultado_Codigo = resultado
+        Formulario_Formulario_Codigo=formulariog,
+        Pregunta_Pregunta_Codigo=pregunta3g,
+        Resultado_Resultado_Codigo=resultado,
+        Formulario_X_Pregunta_FechaCreacion=datetime.datetime.now()
     )
 
-    print("-------------", pregunta1.Pregunta_Interrogante)
-    print("-------------", pregunta2.Pregunta_Interrogante)
-    print("-------------", pregunta3.Pregunta_Interrogante)
+    print("-------------", pregunta1g.Pregunta_Interrogante)
+    print("-------------", pregunta2g.Pregunta_Interrogante)
+    print("-------------", pregunta3g.Pregunta_Interrogante)
 
-    return render(request, 'authenticate/reconocimiento-1.html', {"pregunta1": pregunta1, "pregunta2": pregunta2, "pregunta3": pregunta3})
+    return render(request, 'authenticate/reconocimiento-1.html', {"pregunta1": pregunta1g, "pregunta2": pregunta2g, "pregunta3": pregunta3g})
 
 
 def reconocimiento2(request):
@@ -263,7 +272,7 @@ def record2(request):
     l.start()
     l.recorder.start()
     l.join()
-    
+
     gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(
         set_file_name)
     print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean,
@@ -272,25 +281,38 @@ def record2(request):
         localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
     print('resulting_text ', resulting_text)
     print('resulting_num ', resulting_description)
-    print('retrieved data ', resulting_text, 'desc ', resulting_description, 'numbers ', calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result)
+    print('retrieved data ', resulting_text, 'desc ', resulting_description, 'numbers ', calculated_result_parameters,
+          quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result)
     # call to backend to retrieve last recorded audio
     # insert into table of statistics resulting_text, resulting_description
-    
+
     paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
     formulario = Formulario.objects.filter(
         Paciente_Paciente_Codigo=paciente.Paciente_Codigo).order_by('-Formulario_FechaCreacion')[0]
-    resultado = Resultado.objects.get(formulario.Resultado_Resultado_Codigo)
+    counter = Formulario_X_Pregunta.objects.filter(
+        Formulario_Formulario_Codigo=formulario.Formulario_Codigo,
+        Formulario_X_Pregunta_FechaActualizacion__isnull=True).count()
 
-    resultado.Resultado_Diagnostico=resulting_text
-    resultado.Resultado_Diagnostico=resulting_text,
-    resultado.Resultado_Descripcion=resulting_description,
-    resultado.Resultado_Recomendacion=NULL,
-    resultado.Resultado_por_parametros = calculated_result_parameters,
-    resultado.Resultado_por_palabras_depresivas = quantity_depression_words,
-    resultado.Resultado_escala_total = scale_final_result,
-    resultado.Resultado_escala_por_parametros = scale_by_parameters,
-    resultado.Resultado_escala_por_palabras_depresivas = scale_by_words_said,
-    resultado.Resultado_Fecha=datetime.datetime.now()
+    if counter > 0:
+        formulario_x_pregunta =     Formulario_X_Pregunta.objects.filter(
+            Formulario_Formulario_Codigo=formulario.Formulario_Codigo,
+            Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('-Formulario_X_Pregunta_FechaCreacion')[0]
+
+        resultado = Resultado.objects.create(
+            Resultado_Diagnostico=resulting_text,
+            Resultado_Descripcion=resulting_description,
+            Resultado_Recomendacion=NULL,
+            Resultado_por_parametros=calculated_result_parameters,
+            Resultado_por_palabras_depresivas=quantity_depression_words,
+            Resultado_escala_total=scale_final_result,
+            Resultado_escala_por_parametros=scale_by_parameters,
+            Resultado_escala_por_palabras_depresivas=scale_by_words_said,
+            Resultado_Fecha=datetime.datetime.now()
+        )
+
+        formulario_x_pregunta.Resultado_Resultado_Codigo = resultado.Resultado_Codigo
+        formulario_x_pregunta.Formulario_X_Pregunta_FechaActualizacion = datetime.datetime.now()
+        formulario_x_pregunta.save()
 
     path1 = os.path.join(C_PATH, set_file_name+'.wav')
     path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
@@ -301,7 +323,7 @@ def record2(request):
 
 def stop2(request):
     keyboard.press('t')
-    return redirect('estadisticas2')
+    return render(request, 'authenticate/reconocimiento-2.html', {})
 
 
 class ChartData(APIView):
@@ -316,7 +338,8 @@ class ChartData(APIView):
                   "Moderadamente severa", "Muy severa"]
         user_id = self.request.query_params.get('userId')
         paciente = Paciente.objects.get(Paciente_Codigo=user_id)
-        encuesta = Formulario_X_Pregunta.objects.all().select_related('Formulario_Codigo').select_related('Pregunta_Codigo')
+        encuesta = Formulario_X_Pregunta.objects.all().select_related(
+            'Formulario_Codigo').select_related('Pregunta_Codigo')
         minimo = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
         leve = Resultado.objects.filter(
@@ -331,13 +354,15 @@ class ChartData(APIView):
             Encuesta_Encuesta_Codigo=encuesta, Resultado_Fecha__range=(start_date, end_date)).count()
         resultados_escala_total = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta).values_list('Resultado_escala_total', flat=True)
-        
+
         resultados_escala_total = list(resultados_escala_total)
 
         fechas_de_todos_los_resultados = Resultado.objects.filter(
             Encuesta_Encuesta_Codigo=encuesta)
-        fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.extra(select={'datestr':"strftime( '%%Y-%%m-%%d %%H:%%M', Resultado_Fecha)"})
-        fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.values_list('datestr', flat=True)
+        fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.extra(
+            select={'datestr': "strftime( '%%Y-%%m-%%d %%H:%%M', Resultado_Fecha)"})
+        fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.values_list(
+            'datestr', flat=True)
         fechas_de_todos_los_resultados = list(fechas_de_todos_los_resultados)
 
         default_items = [minimo, leve, moderada,
