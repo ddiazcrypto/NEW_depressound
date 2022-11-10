@@ -24,6 +24,7 @@ urlpatterns = [
     path('stop_last', views.stop_last, name='stop_last'),
     path('first_question', views.first_question, name='first_question'),
     path('second_question', views.second_question, name='second_question'),
+    path('end_form', views.end_form, name='end_form'),
     path('third_question', views.third_question, name='third_question'),
     path('stop_first_question', views.stop_first_question, name='stop_first_question'),
     path('stop_second_question', views.stop_second_question, name='stop_second_question'),

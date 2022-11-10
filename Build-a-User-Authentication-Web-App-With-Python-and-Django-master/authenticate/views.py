@@ -166,9 +166,9 @@ def historial(request):
 
 
 def reconocimiento(request):
-    resultados = Formulario_X_Pregunta.objects.select_related('Resultado_Resultado_Codigo').values_list('FormularioPregunta_Codigo', 'Resultado_Diagnostico', 'Resultado_Descripcion', 'Resultado_escala_total', 'Resultado_escala_por_parametros', 'Resultado_escala_por_palabras_depresivas', 'Resultado_por_parametros', 'Resultado_por_palabras_depresivas')
+    # resultados = Formulario_X_Pregunta.objects.select_related('Resultado_Resultado_Codigo').values_list('FormularioPregunta_Codigo', 'Resultado_Diagnostico', 'Resultado_Descripcion', 'Resultado_escala_total', 'Resultado_escala_por_parametros', 'Resultado_escala_por_palabras_depresivas', 'Resultado_por_parametros', 'Resultado_por_palabras_depresivas')
 
-    print('resultados ', resultados)
+    # print('resultados ', resultados)
     paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
     formulario_titulo = ("formulario_"+paciente.Paciente_Usuario)
     formulario_detalle = (
@@ -262,6 +262,9 @@ def record_with_keys(request):
 def get_charts(request):
     return render(request, 'authenticate/charts.html')
 
+def end_form(request):
+    keyboard.press('t')
+    return render(request, 'authenticate/end-form.html')
 
 def record2(request):
     date_str = datetime.datetime.now().timestamp()
@@ -322,62 +325,6 @@ def stop2(request):
     return render(request, 'authenticate/reconocimiento-2.html', {})
 
 def stop_last(request):
-    date_str = datetime.datetime.now().timestamp()
-    date_str = str(datetime.datetime.now().timestamp())
-    date_str = date_str.split('.')
-    date_str = date_str[0] + date_str[1]
-    set_file_name = date_str
-    r = recorder(set_file_name + ".wav")
-    l = listener(r)
-    l.start()
-    l.recorder.start()
-    l.join()
-
-    gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(
-        set_file_name)
-    resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result = calculation(
-        localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
-    # call to backend to retrieve last recorded audio
-    # insert into table of statistics resulting_text, resulting_description
-
-    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
-    formulario = Formulario.objects.filter(
-        Paciente_Paciente_Codigo_id=paciente.Paciente_Codigo).order_by('-Formulario_FechaCreacion')[0]
-    counter = Formulario_X_Pregunta.objects.filter(
-        Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
-        Formulario_X_Pregunta_FechaActualizacion__isnull=True).count()
-
-    if counter > 0:
-        formulario_x_pregunta =     Formulario_X_Pregunta.objects.filter(
-            Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
-            Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('Formulario_X_Pregunta_FechaCreacion')[0]
-
-        resultado = Resultado.objects.create(
-            Resultado_Diagnostico=resulting_text,
-            Resultado_Descripcion=resulting_description,
-            Resultado_Recomendacion=NULL,
-            Resultado_por_parametros=calculated_result_parameters,
-            Resultado_por_palabras_depresivas=quantity_depression_words,
-            Resultado_escala_total=scale_final_result,
-            Resultado_escala_por_parametros=scale_by_parameters,
-            Resultado_escala_por_palabras_depresivas=scale_by_words_said,
-            Resultado_Fecha=datetime.datetime.now()
-        )
-
-        formulario_x_pregunta.Resultado_Resultado_Codigo_id = resultado.Resultado_Codigo
-        formulario_x_pregunta.Formulario_X_Pregunta_FechaActualizacion = datetime.datetime.now()
-        formulario_x_pregunta.save()
-
-    # general result
-
-
-    
-
-    path1 = os.path.join(C_PATH, set_file_name+'.wav')
-    path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
-    os.remove(path1)
-    os.remove(path2)
-    keyboard.press('t')
     return redirect('estadisticas2')
 
 def stop_first_question(request):
