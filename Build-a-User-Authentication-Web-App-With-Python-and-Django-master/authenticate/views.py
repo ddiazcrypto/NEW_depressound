@@ -32,6 +32,16 @@ def home(request):
 
 
 def home_login(request):
+    a1 = Formulario_X_Pregunta.objects.select_related('Resultado_Resultado_Codigo')
+    print(str(a1.query))
+
+    k=Formulario_X_Pregunta.objects.filter(Formulario_Formulario_Codigo=8).select_related('Resultado_Resultado_Codigo')
+
+    results = Resultado.objects()
+    print('so k ', k)
+    print('results ', results)
+    print('BRII 3', str(k.query))
+
     return render(request, 'authenticate/home_login.html', {})
 
 
