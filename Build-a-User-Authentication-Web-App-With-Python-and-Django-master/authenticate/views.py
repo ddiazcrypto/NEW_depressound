@@ -125,10 +125,7 @@ def change_password(request):
 
 
 def estadisticas(request):
-    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
-    encuesta = Encuesta.objects.get(
-        Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
-    resultados = Resultado.objects.filter(Encuesta_Encuesta_Codigo=encuesta)
+    resultados = Resultado.objects
     promedio_parametros = resultados.aggregate(Avg('Resultado_por_parametros'))
     promedio_parametros = round(list(promedio_parametros.values())[0], 2)
     promedio_palabras = resultados.aggregate(
@@ -159,11 +156,7 @@ def estadisticas(request):
 
 def estadisticas2(request):
     # call to backend with the results
-    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
-    encuesta = Encuesta.objects.get(
-        Paciente_Paciente_Codigo=paciente.Paciente_Codigo)
-    resultados = Resultado.objects.filter(
-        Encuesta_Encuesta_Codigo=encuesta).order_by('-Resultado_Fecha')
+    resultados = Resultado.objects.order_by('-Resultado_Fecha')
     numero_resultados = len(list(resultados))
     return render(request, 'authenticate/estadisticas2.html', {"resultados": resultados, "numero_resultados": numero_resultados})
 
@@ -173,6 +166,9 @@ def historial(request):
 
 
 def reconocimiento(request):
+    resultados = Formulario_X_Pregunta.objects.select_related('Resultado_Resultado_Codigo').values_list('FormularioPregunta_Codigo', 'Resultado_Diagnostico', 'Resultado_Descripcion', 'Resultado_escala_total', 'Resultado_escala_por_parametros', 'Resultado_escala_por_palabras_depresivas', 'Resultado_por_parametros', 'Resultado_por_palabras_depresivas')
+
+    print('resultados ', resultados)
     paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
     formulario_titulo = ("formulario_"+paciente.Paciente_Usuario)
     formulario_detalle = (
@@ -213,19 +209,27 @@ def reconocimiento(request):
         Formulario_X_Pregunta_FechaCreacion=datetime.datetime.now()
     )
 
-    print("-------------", pregunta1g.Pregunta_Interrogante)
-    print("-------------", pregunta2g.Pregunta_Interrogante)
-    print("-------------", pregunta3g.Pregunta_Interrogante)
-
     return render(request, 'authenticate/reconocimiento-1.html', {"pregunta1": pregunta1g, "pregunta2": pregunta2g, "pregunta3": pregunta3g})
 
 
 def reconocimiento2(request):
-    return render(request, 'authenticate/reconocimiento-2.html', {})
+    return render(request, 'authenticate/reconocimiento-2.html')
 
 
 def pendientes(request):
     return render(request, 'authenticate/pendientes.html', {})
+
+def first_question(request):
+    pregunta1g = Pregunta.objects.filter(Pregunta_Nivel=1).order_by('?')[0]
+    return render(request, 'authenticate/first-question.html', {"pregunta": pregunta1g})
+
+def second_question(request):
+    pregunta2g = Pregunta.objects.filter(Pregunta_Nivel=2).order_by('?')[0]
+    return render(request, 'authenticate/second-question.html', {"pregunta": pregunta2g})
+
+def third_question(request):
+    pregunta3g = Pregunta.objects.filter(Pregunta_Nivel=3).order_by('?')[0]
+    return render(request, 'authenticate/third-question.html', {"pregunta": pregunta3g})
 
 
 def recomendaciones(request):
@@ -265,8 +269,6 @@ def record2(request):
     date_str = date_str.split('.')
     date_str = date_str[0] + date_str[1]
     set_file_name = date_str
-    print('set file name ', set_file_name)
-    print('q to start recording, t to stop it')
     r = recorder(set_file_name + ".wav")
     l = listener(r)
     l.start()
@@ -275,28 +277,22 @@ def record2(request):
 
     gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(
         set_file_name)
-    print(gender, ' ', localShimmer, ' ', localJitter, ' ', f1_mean,
-          ' ', f2_mean, ' ', hnr, ' ', total_evaluated_words)
     resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result = calculation(
         localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
-    print('resulting_text ', resulting_text)
-    print('resulting_num ', resulting_description)
-    print('retrieved data ', resulting_text, 'desc ', resulting_description, 'numbers ', calculated_result_parameters,
-          quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result)
     # call to backend to retrieve last recorded audio
     # insert into table of statistics resulting_text, resulting_description
 
     paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
     formulario = Formulario.objects.filter(
-        Paciente_Paciente_Codigo=paciente.Paciente_Codigo).order_by('-Formulario_FechaCreacion')[0]
+        Paciente_Paciente_Codigo_id=paciente.Paciente_Codigo).order_by('-Formulario_FechaCreacion')[0]
     counter = Formulario_X_Pregunta.objects.filter(
-        Formulario_Formulario_Codigo=formulario.Formulario_Codigo,
+        Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
         Formulario_X_Pregunta_FechaActualizacion__isnull=True).count()
 
     if counter > 0:
         formulario_x_pregunta =     Formulario_X_Pregunta.objects.filter(
-            Formulario_Formulario_Codigo=formulario.Formulario_Codigo,
-            Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('-Formulario_X_Pregunta_FechaCreacion')[0]
+            Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
+            Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('Formulario_X_Pregunta_FechaCreacion')[0]
 
         resultado = Resultado.objects.create(
             Resultado_Diagnostico=resulting_text,
@@ -310,7 +306,7 @@ def record2(request):
             Resultado_Fecha=datetime.datetime.now()
         )
 
-        formulario_x_pregunta.Resultado_Resultado_Codigo = resultado.Resultado_Codigo
+        formulario_x_pregunta.Resultado_Resultado_Codigo_id = resultado.Resultado_Codigo
         formulario_x_pregunta.Formulario_X_Pregunta_FechaActualizacion = datetime.datetime.now()
         formulario_x_pregunta.save()
 
@@ -325,6 +321,74 @@ def stop2(request):
     keyboard.press('t')
     return render(request, 'authenticate/reconocimiento-2.html', {})
 
+def stop_last(request):
+    date_str = datetime.datetime.now().timestamp()
+    date_str = str(datetime.datetime.now().timestamp())
+    date_str = date_str.split('.')
+    date_str = date_str[0] + date_str[1]
+    set_file_name = date_str
+    r = recorder(set_file_name + ".wav")
+    l = listener(r)
+    l.start()
+    l.recorder.start()
+    l.join()
+
+    gender, localShimmer, localJitter, f1_mean, f2_mean, hnr, total_evaluated_words = retrieve_all_results(
+        set_file_name)
+    resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result = calculation(
+        localJitter, localShimmer, f1_mean, f2_mean, hnr, gender, total_evaluated_words)
+    # call to backend to retrieve last recorded audio
+    # insert into table of statistics resulting_text, resulting_description
+
+    paciente = Paciente.objects.get(Paciente_Codigo=request.user.id)
+    formulario = Formulario.objects.filter(
+        Paciente_Paciente_Codigo_id=paciente.Paciente_Codigo).order_by('-Formulario_FechaCreacion')[0]
+    counter = Formulario_X_Pregunta.objects.filter(
+        Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
+        Formulario_X_Pregunta_FechaActualizacion__isnull=True).count()
+
+    if counter > 0:
+        formulario_x_pregunta =     Formulario_X_Pregunta.objects.filter(
+            Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
+            Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('Formulario_X_Pregunta_FechaCreacion')[0]
+
+        resultado = Resultado.objects.create(
+            Resultado_Diagnostico=resulting_text,
+            Resultado_Descripcion=resulting_description,
+            Resultado_Recomendacion=NULL,
+            Resultado_por_parametros=calculated_result_parameters,
+            Resultado_por_palabras_depresivas=quantity_depression_words,
+            Resultado_escala_total=scale_final_result,
+            Resultado_escala_por_parametros=scale_by_parameters,
+            Resultado_escala_por_palabras_depresivas=scale_by_words_said,
+            Resultado_Fecha=datetime.datetime.now()
+        )
+
+        formulario_x_pregunta.Resultado_Resultado_Codigo_id = resultado.Resultado_Codigo
+        formulario_x_pregunta.Formulario_X_Pregunta_FechaActualizacion = datetime.datetime.now()
+        formulario_x_pregunta.save()
+
+    # general result
+
+
+    
+
+    path1 = os.path.join(C_PATH, set_file_name+'.wav')
+    path2 = os.path.join(C_PATH, set_file_name+'.TextGrid')
+    os.remove(path1)
+    os.remove(path2)
+    keyboard.press('t')
+    return redirect('estadisticas2')
+
+def stop_first_question(request):
+    keyboard.press('t')
+    pregunta2g = Pregunta.objects.filter(Pregunta_Nivel=2).order_by('?')[0]
+    return render(request, 'authenticate/second-question.html', {"pregunta": pregunta2g})
+
+def stop_second_question(request):
+    keyboard.press('t')
+    pregunta3g = Pregunta.objects.filter(Pregunta_Nivel=3).order_by('?')[0]
+    return render(request, 'authenticate/third-question.html', {"pregunta": pregunta3g})
 
 class ChartData(APIView):
     authentication_classes = []
