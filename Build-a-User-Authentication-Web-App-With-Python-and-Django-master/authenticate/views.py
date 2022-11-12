@@ -32,15 +32,20 @@ def home(request):
 
 
 def home_login(request):
-    # a1 = Formulario_X_Pregunta.objects.select_related('Resultado_Resultado_Codigo')
-    # print(str(a1.query))
 
-    # k=Formulario_X_Pregunta.objects.filter(Formulario_Formulario_Codigo=8).select_related('Resultado_Resultado_Codigo')
+    formulario = Formulario.objects.filter(
+        Paciente_Paciente_Codigo_id=request.user.id).order_by('-Formulario_FechaCreacion')[0]
+
+    resultados = Formulario_X_Pregunta.objects.filter(
+        Formulario_Formulario_Codigo=formulario.Formulario_Codigo).select_related('Resultado_Resultado_Codigo')
+    # holi = k.values_list("Resultado_Diagnostico", "Resultado_Codigo")
+    print('BRII 3', str(resultados.query))
+    resultados = list(resultados)
 
     # results = Resultado.objects()
-    # print('so k ', k)
+    # print('so k ', resultados[0].Resultado_Codigo)
+    # print('holi  ', holi)
     # print('results ', results)
-    # print('BRII 3', str(k.query))
 
     return render(request, 'authenticate/home_login.html', {})
 
@@ -229,13 +234,16 @@ def reconocimiento2(request):
 def pendientes(request):
     return render(request, 'authenticate/pendientes.html', {})
 
+
 def first_question(request):
     pregunta1g = Pregunta.objects.filter(Pregunta_Nivel=1).order_by('?')[0]
     return render(request, 'authenticate/first-question.html', {"pregunta": pregunta1g})
 
+
 def second_question(request):
     pregunta2g = Pregunta.objects.filter(Pregunta_Nivel=2).order_by('?')[0]
     return render(request, 'authenticate/second-question.html', {"pregunta": pregunta2g})
+
 
 def third_question(request):
     pregunta3g = Pregunta.objects.filter(Pregunta_Nivel=3).order_by('?')[0]
@@ -272,9 +280,11 @@ def record_with_keys(request):
 def get_charts(request):
     return render(request, 'authenticate/charts.html')
 
+
 def end_form(request):
     keyboard.press('t')
     return render(request, 'authenticate/end-form.html')
+
 
 def record2(request):
     date_str = datetime.datetime.now().timestamp()
@@ -303,7 +313,7 @@ def record2(request):
         Formulario_X_Pregunta_FechaActualizacion__isnull=True).count()
 
     if counter > 0:
-        formulario_x_pregunta =     Formulario_X_Pregunta.objects.filter(
+        formulario_x_pregunta = Formulario_X_Pregunta.objects.filter(
             Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
             Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('Formulario_X_Pregunta_FechaCreacion')[0]
 
@@ -334,18 +344,22 @@ def stop2(request):
     keyboard.press('t')
     return render(request, 'authenticate/reconocimiento-2.html', {})
 
+
 def stop_last(request):
     return redirect('estadisticas2')
+
 
 def stop_first_question(request):
     keyboard.press('t')
     pregunta2g = Pregunta.objects.filter(Pregunta_Nivel=2).order_by('?')[0]
     return render(request, 'authenticate/second-question.html', {"pregunta": pregunta2g})
 
+
 def stop_second_question(request):
     keyboard.press('t')
     pregunta3g = Pregunta.objects.filter(Pregunta_Nivel=3).order_by('?')[0]
     return render(request, 'authenticate/third-question.html', {"pregunta": pregunta3g})
+
 
 class ChartData(APIView):
     authentication_classes = []
@@ -354,7 +368,7 @@ class ChartData(APIView):
     def get(self, request, format=None):
         today = datetime.datetime.now()
         start_date = datetime.date(today.year, today.month, 1)
-        end_date = datetime.date(today.year, today.month, 31)
+        end_date = datetime.date(today.year, today.month, 30)
         labels = ["Mínima", "Leve", "Moderada",
                   "Moderadamente severa", "Muy severa"]
         user_id = self.request.query_params.get('userId')
