@@ -276,7 +276,7 @@ def get_charts(request):
 
 def end_form(request):
     keyboard.press('t')
-    time.sleep(2.4)
+    time.sleep(5)
     formulario = Formulario.objects.filter(
         Paciente_Paciente_Codigo_id=request.user.id).order_by('-Formulario_FechaCreacion')[0]
 
@@ -324,7 +324,17 @@ def end_form(request):
             Resultado_Fecha=datetime.datetime.now()
         )
 
+    formulario.Resultado_Resultado_Codigo.Resultado_Diagnostico = resulting_text
+    formulario.Resultado_Resultado_Codigo.Resultado_Descripcion = resulting_description
+    formulario.Resultado_Resultado_Codigo.Resultado_Recomendacion = NULL
+    formulario.Resultado_Resultado_Codigo.Resultado_por_parametros = calculated_result_parameters
+    formulario.Resultado_Resultado_Codigo.Resultado_por_palabras_depresivas = quantity_depression_words
+    formulario.Resultado_Resultado_Codigo.Resultado_escala_total = scale_final_result
+    formulario.Resultado_Resultado_Codigo.Resultado_escala_por_parametros = scale_by_parameters
+    formulario.Resultado_Resultado_Codigo.Resultado_escala_por_palabras_depresivas = scale_by_words_said
+    formulario.Resultado_Resultado_Codigo.Resultado_Fecha = datetime.datetime.now()
     formulario.Resultado_Resultado_Codigo = resultado
+
     formulario.save()
     return render(request, 'authenticate/end-form.html')
 
