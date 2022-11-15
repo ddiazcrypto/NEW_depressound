@@ -428,27 +428,27 @@ class ChartData(APIView):
                   "Moderadamente severa", "Muy severa"]
         user_id = self.request.query_params.get('userId')
         paciente = Paciente.objects.get(Paciente_Codigo=user_id)
-        encuesta = Formulario_X_Pregunta.objects.all().select_related(
+        formulario_pregunta = Formulario_X_Pregunta.objects.all().select_related(
             'Formulario_Codigo').select_related('Pregunta_Codigo')
         minimo = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
+            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
         leve = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=2, Resultado_Fecha__range=(start_date, end_date)).count()
+            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=2, Resultado_Fecha__range=(start_date, end_date)).count()
         moderada = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=3, Resultado_Fecha__range=(start_date, end_date)).count()
+            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=3, Resultado_Fecha__range=(start_date, end_date)).count()
         moderadamente_severa = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=4, Resultado_Fecha__range=(start_date, end_date)).count()
+            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=4, Resultado_Fecha__range=(start_date, end_date)).count()
         muy_severa = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_escala_total=5, Resultado_Fecha__range=(start_date, end_date)).count()
+            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=5, Resultado_Fecha__range=(start_date, end_date)).count()
         total = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta, Resultado_Fecha__range=(start_date, end_date)).count()
+            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_Fecha__range=(start_date, end_date)).count()
         resultados_escala_total = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta).values_list('Resultado_escala_total', flat=True)
+            Encuesta_Encuesta_Codigo=formulario_pregunta).values_list('Resultado_escala_total', flat=True)
 
         resultados_escala_total = list(resultados_escala_total)
 
         fechas_de_todos_los_resultados = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=encuesta)
+            Encuesta_Encuesta_Codigo=formulario_pregunta)
         fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.extra(
             select={'datestr': "strftime( '%%Y-%%m-%%d %%H:%%M', Resultado_Fecha)"})
         fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.values_list(
