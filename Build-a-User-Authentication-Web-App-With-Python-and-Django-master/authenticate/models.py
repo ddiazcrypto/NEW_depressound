@@ -24,8 +24,7 @@ class Resultado(models.Model):
     Resultado_por_parametros = models.FloatField(default=0)
     Resultado_por_palabras_depresivas = models.FloatField(default=0)
     Resultado_escala_total = models.IntegerField(default = 0)
-    Resultado_tipo_1 = models.IntegerField(default = 0)
-    Resultado_tipo_2 = models.IntegerField(default = 0)
+    Resultado_tipo = models.IntegerField(default = 0) # 1 formulario por pregunta, 2 formulario
     Resultado_escala_por_parametros  = models.IntegerField(default = 0)
     Resultado_escala_por_palabras_depresivas  = models.IntegerField(default = 0)
     Resultado_Fecha = models.DateTimeField()

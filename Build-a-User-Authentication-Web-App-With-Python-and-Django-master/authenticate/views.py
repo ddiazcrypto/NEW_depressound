@@ -34,12 +34,6 @@ def home(request):
 
 
 def home_login(request):
-
-    # results = Resultado.objects()
-    # print('so k ', resultados[0].Resultado_Codigo)
-    # print('holi  ', holi)
-    # print('results ', results)
-
     return render(request, 'authenticate/home_login.html', {})
 
 
@@ -133,7 +127,7 @@ def change_password(request):
 
 
 def estadisticas(request):
-    resultados = Resultado.objects
+    resultados = Resultado.objects.filter(Resultado_tipo=2)
     promedio_parametros = resultados.aggregate(Avg('Resultado_por_parametros'))
     promedio_parametros = round(list(promedio_parametros.values())[0], 2)
     promedio_palabras = resultados.aggregate(
@@ -164,7 +158,7 @@ def estadisticas(request):
 
 def estadisticas2(request):
     # call to backend with the results
-    resultados = Resultado.objects.order_by('-Resultado_Fecha')
+    resultados = Resultado.objects.filter(Resultado_tipo=2).order_by('-Resultado_Fecha')
     numero_resultados = len(list(resultados))
     return render(request, 'authenticate/estadisticas2.html', {"resultados": resultados, "numero_resultados": numero_resultados})
 
@@ -321,7 +315,8 @@ def end_form(request):
             Resultado_escala_total=scale_final_result,
             Resultado_escala_por_parametros=scale_by_parameters,
             Resultado_escala_por_palabras_depresivas=scale_by_words_said,
-            Resultado_Fecha=datetime.datetime.now()
+            Resultado_Fecha=datetime.datetime.now(),
+            Resultado_tipo = 2
         )
 
     formulario.Resultado_Resultado_Codigo.Resultado_Diagnostico = resulting_text
@@ -381,7 +376,8 @@ def record2(request):
             Resultado_escala_total=scale_final_result,
             Resultado_escala_por_parametros=scale_by_parameters,
             Resultado_escala_por_palabras_depresivas=scale_by_words_said,
-            Resultado_Fecha=datetime.datetime.now()
+            Resultado_Fecha=datetime.datetime.now(),
+            Resultado_tipo = 1
         )
 
         formulario_x_pregunta.Resultado_Resultado_Codigo_id = resultado.Resultado_Codigo
@@ -428,27 +424,25 @@ class ChartData(APIView):
                   "Moderadamente severa", "Muy severa"]
         user_id = self.request.query_params.get('userId')
         paciente = Paciente.objects.get(Paciente_Codigo=user_id)
-        formulario_pregunta = Formulario_X_Pregunta.objects.all().select_related(
-            'Formulario_Codigo').select_related('Pregunta_Codigo')
         minimo = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
+            Resultado_tipo=2, Resultado_escala_total=1, Resultado_Fecha__range=(start_date, end_date)).count()
         leve = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=2, Resultado_Fecha__range=(start_date, end_date)).count()
+            Resultado_tipo=2, Resultado_escala_total=2, Resultado_Fecha__range=(start_date, end_date)).count()
         moderada = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=3, Resultado_Fecha__range=(start_date, end_date)).count()
+            Resultado_tipo=2, Resultado_escala_total=3, Resultado_Fecha__range=(start_date, end_date)).count()
         moderadamente_severa = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=4, Resultado_Fecha__range=(start_date, end_date)).count()
+            Resultado_tipo=2, Resultado_escala_total=4, Resultado_Fecha__range=(start_date, end_date)).count()
         muy_severa = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_escala_total=5, Resultado_Fecha__range=(start_date, end_date)).count()
+            Resultado_tipo=2, Resultado_escala_total=5, Resultado_Fecha__range=(start_date, end_date)).count()
         total = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta, Resultado_Fecha__range=(start_date, end_date)).count()
+            Resultado_tipo=2, Resultado_Fecha__range=(start_date, end_date)).count()
         resultados_escala_total = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta).values_list('Resultado_escala_total', flat=True)
+            Resultado_tipo=2).values_list('Resultado_escala_total', flat=True)
 
         resultados_escala_total = list(resultados_escala_total)
 
         fechas_de_todos_los_resultados = Resultado.objects.filter(
-            Encuesta_Encuesta_Codigo=formulario_pregunta)
+            Resultado_tipo=2)
         fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.extra(
             select={'datestr': "strftime( '%%Y-%%m-%%d %%H:%%M', Resultado_Fecha)"})
         fechas_de_todos_los_resultados = fechas_de_todos_los_resultados.values_list(
