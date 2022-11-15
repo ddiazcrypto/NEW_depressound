@@ -13,6 +13,13 @@ def calculation(jitter, shimmer, f1, f2, hnr, gender,quantity_depression_words):
     result_words_var_diagnosis = final_diagnosis_text(round(result_words_var))
     return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text, result_parameters_var_diagnosis, result_words_var_diagnosis), calculated_result_parameters, quantity_depression_words, result_parameters_var, result_words_var, round(final_result)
 
+def average_of_results(final_result, calculated_result_parameters, quantity_depression_words, result_words_var):
+    diagnosis_text = final_diagnosis_text(round(final_result))
+    result_parameters_var = result_parameters(calculated_result_parameters)
+    result_parameters_var_diagnosis = final_diagnosis_text(round(result_parameters_var))
+    result_words_var_diagnosis = final_diagnosis_text(round(result_words_var))
+    return diagnosis_text, diagnosis(calculated_result_parameters, quantity_depression_words, diagnosis_text, result_parameters_var_diagnosis, result_words_var_diagnosis), calculated_result_parameters, quantity_depression_words, result_parameters_var, result_words_var, round(final_result)
+
 def calculate_male(jitter, shimmer, f1, f2, hnr):
     total_sum = 0
     if shimmer >= 0.1365 and shimmer <= 0.207:

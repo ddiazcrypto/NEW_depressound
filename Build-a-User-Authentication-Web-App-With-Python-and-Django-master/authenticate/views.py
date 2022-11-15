@@ -12,11 +12,13 @@ from .forms import SignUpForm, EditProfileForm
 from scripts.parameters import main_proccess, retrieve_all_results
 from scripts.classes import record, start_recording, stop_recording, recorder, listener
 from pynput.keyboard import Key, Controller
-from scripts.calculate import calculation
+from scripts.calculate import calculation, average_of_results
 import datetime
 from utils.constants import C_PATH
 from rest_framework.views import APIView
 from rest_framework.response import Response
+import time
+
 import os
 
 # from scripts.parameters import run_mike
@@ -32,15 +34,6 @@ def home(request):
 
 
 def home_login(request):
-
-    formulario = Formulario.objects.filter(
-        Paciente_Paciente_Codigo_id=request.user.id).order_by('-Formulario_FechaCreacion')[0]
-
-    resultados = Formulario_X_Pregunta.objects.filter(
-        Formulario_Formulario_Codigo=formulario.Formulario_Codigo).select_related('Resultado_Resultado_Codigo')
-    # holi = k.values_list("Resultado_Diagnostico", "Resultado_Codigo")
-    print('BRII 3', str(resultados.query))
-    resultados = list(resultados)
 
     # results = Resultado.objects()
     # print('so k ', resultados[0].Resultado_Codigo)
@@ -283,6 +276,56 @@ def get_charts(request):
 
 def end_form(request):
     keyboard.press('t')
+    time.sleep(2.4)
+    formulario = Formulario.objects.filter(
+        Paciente_Paciente_Codigo_id=request.user.id).order_by('-Formulario_FechaCreacion')[0]
+
+    # resultados = Formulario_X_Pregunta.objects.filter(
+    #     Formulario_Formulario_Codigo=formulario.Formulario_Codigo, Resultado_Resultado_Codigo__Resultado_Codigo = 31)
+
+        
+    resultados = Formulario_X_Pregunta.objects.filter(Formulario_Formulario_Codigo=formulario.Formulario_Codigo).select_related('Resultado_Resultado_Codigo').all()
+
+    # holi = k.values_list("Resultado_Diagnostico", "Resultado_Codigo")
+    print('BRII 3', str(resultados.query))
+    print('RESULTADOS ', resultados.values())
+    resultados_list = list(resultados.values())
+    print('resultados_list ', resultados_list)
+
+    # Resultado_escala_total, Resultado_por_parametros, Resultado_por_palabras_depresivas, Resultado_escala_por_palabras_depresivas
+    sum_resultado_escala_total = 0
+    sum_resultado_por_parametros = 0
+    sum_resultado_por_palabras_depresivas = 0
+    sum_resultado_escala_por_palabras_depresivas = 0
+
+    for p in resultados:
+        sum_resultado_escala_total = sum_resultado_escala_total + p.Resultado_Resultado_Codigo.Resultado_escala_total
+        sum_resultado_por_parametros = sum_resultado_por_parametros + p.Resultado_Resultado_Codigo.Resultado_por_parametros
+        sum_resultado_por_palabras_depresivas = sum_resultado_por_palabras_depresivas + p.Resultado_Resultado_Codigo.Resultado_por_palabras_depresivas
+        sum_resultado_escala_por_palabras_depresivas = sum_resultado_escala_por_palabras_depresivas + p.Resultado_Resultado_Codigo.Resultado_escala_por_palabras_depresivas
+        print(p.Resultado_Resultado_Codigo)
+
+    avg_escala_total = sum_resultado_escala_total/3
+    avg_resultado_por_parametros = sum_resultado_por_parametros/3
+    avg_resultado_por_palabras_depresivas = sum_resultado_por_palabras_depresivas/3
+    avg_resultado_escala_por_palabras_depresivas = sum_resultado_escala_por_palabras_depresivas/3
+
+    resulting_text, resulting_description,  calculated_result_parameters, quantity_depression_words, scale_by_parameters, scale_by_words_said, scale_final_result = average_of_results(avg_escala_total, avg_resultado_por_parametros, avg_resultado_por_palabras_depresivas, avg_resultado_escala_por_palabras_depresivas)
+
+    resultado = Resultado.objects.create(
+            Resultado_Diagnostico=resulting_text,
+            Resultado_Descripcion=resulting_description,
+            Resultado_Recomendacion=NULL,
+            Resultado_por_parametros=calculated_result_parameters,
+            Resultado_por_palabras_depresivas=quantity_depression_words,
+            Resultado_escala_total=scale_final_result,
+            Resultado_escala_por_parametros=scale_by_parameters,
+            Resultado_escala_por_palabras_depresivas=scale_by_words_said,
+            Resultado_Fecha=datetime.datetime.now()
+        )
+
+    formulario.Resultado_Resultado_Codigo = resultado
+    formulario.save()
     return render(request, 'authenticate/end-form.html')
 
 
@@ -316,6 +359,8 @@ def record2(request):
         formulario_x_pregunta = Formulario_X_Pregunta.objects.filter(
             Formulario_Formulario_Codigo_id=formulario.Formulario_Codigo,
             Formulario_X_Pregunta_FechaActualizacion__isnull=True).order_by('Formulario_X_Pregunta_FechaCreacion')[0]
+        
+        # average_of_results(Resultado_escala_total, Resultado_por_parametros, Resultado_por_palabras_depresivas, Resultado_escala_por_palabras_depresivas)
 
         resultado = Resultado.objects.create(
             Resultado_Diagnostico=resulting_text,
